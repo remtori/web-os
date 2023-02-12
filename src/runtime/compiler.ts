@@ -24,7 +24,7 @@ const compilerOptions: Options = {
 	module: {
 		type: 'commonjs',
 		strict: true,
-		strictMode: true,
+		strictMode: false,
 		lazy: true,
 		importInterop: 'none',
 	},

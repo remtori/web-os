@@ -1,13 +1,6 @@
 import { compile } from './compiler';
-import { ContextHandler, ExecuteCodeRequest, InitRequest, WorkerResponse } from './types';
-import JsWorker from './worker?worker';
-
-interface ExecutionContext {
-	code: string;
-	resolve: () => void;
-	reject: (error: Error) => void;
-	timeoutHandler: number;
-}
+import { ExecuteCodeRequest, InitRequest, WorkerResponse, ExecutionContext, AsyncResultRequest, ExecutorExecutionContext } from './types';
+import JsWorker from './runtime-worker?worker';
 
 class ExecutionError extends Error {
 	filename?: string;
@@ -18,27 +11,65 @@ class ExecutionError extends Error {
 interface Execution {
 	code: string;
 	filename: string;
+	resolve: () => void;
+	reject: (error: Error) => void;
+	timeoutHandler: any;
+	compileRequired: boolean;
 }
 
 export class JsExecutor {
 	private _worker?: Worker;
-	private _inflightExecutionContext?: ExecutionContext;
+
+	private _inflightExecution?: Execution;
 	private _queue: Execution[];
-	private _sharedArrayBuffer: SharedArrayBuffer;
-	private _handler: Promisify<ContextHandler>;
 
-	constructor(handler: Promisify<ContextHandler>) {
-		this._queue = [];
+	private _initRequest: InitRequest;
+	private _ctx: ExecutionContext;
 
+	constructor(ctx: ExecutorExecutionContext) {
 		const size = 1024 * 1024 * 1024;
-		this._sharedArrayBuffer = new SharedArrayBuffer(size);
-		this._handler = handler;
+
+		this._queue = [];
+		this._ctx = ctx;
+
+		const contextSyncFns = [];
+		const contextAsyncFns = [];
+		const contextProps: any = {};
+		for (const [key, value] of Object.entries(ctx)) {
+			if (typeof value === 'function') {
+				if ((value as Function).constructor.name === 'AsyncFunction') {
+					contextAsyncFns.push(key);
+				} else {
+					contextSyncFns.push(key);
+				}
+			} else {
+				contextProps[key] = value;
+			}
+		}
+
+		this._initRequest = {
+			type: 'init',
+			sharedArrayBuffer: new SharedArrayBuffer(size),
+			contextProps,
+			contextSyncFns,
+			contextAsyncFns,
+		}
 		this._restartWorker();
 	}
 
-	execute(code: string, filename: string) {
-		this._queue.push({ code, filename });
-		this._next();
+	execute(code: string, filename: string, compileRequired = true): Promise<void> {
+		return new Promise((resolve, reject) => {
+			this._queue.push({
+				filename,
+				code,
+				resolve,
+				reject,
+				timeoutHandler: 0,
+				compileRequired,
+			});
+
+			this._next();
+		});
 	}
 
 	private _restartWorker() {
@@ -49,7 +80,7 @@ export class JsExecutor {
 			err.preventDefault();
 			console.log('Worker error', err.filename, err.lineno, err.message);
 
-			const ctx = this._inflightExecutionContext;
+			const ctx = this._inflightExecution;
 			if (ctx) {
 				const error = new ExecutionError(err.message);
 				error.filename = err.filename;
@@ -58,7 +89,7 @@ export class JsExecutor {
 				ctx.reject(error);
 
 				clearTimeout(ctx.timeoutHandler);
-				this._inflightExecutionContext = undefined;
+				this._inflightExecution = undefined;
 				this._next();
 			}
 		});
@@ -68,19 +99,18 @@ export class JsExecutor {
 			this._restartWorker();
 		});
 
-		const sharedData = new Int32Array(this._sharedArrayBuffer);
+		const sharedData = new Int32Array(this._initRequest.sharedArrayBuffer);
 		this._worker.addEventListener('message', async (event) => {
-			const packet = event.data as WorkerResponse;
-			switch (packet.type) {
-				case 'executeResult': {
-					console.log('stacktrace? ' + packet.error?.stack);
-					const ctx = this._inflightExecutionContext;
+			const request = event.data as WorkerResponse;
+			switch (request.type) {
+				case 'execution-result': {
+					const ctx = this._inflightExecution;
 					if (ctx) {
 						clearTimeout(ctx.timeoutHandler);
-						this._inflightExecutionContext = undefined;
+						this._inflightExecution = undefined;
 
-						if (packet.error) {
-							ctx.reject(packet.error);
+						if (request.error) {
+							ctx.reject(request.error);
 						} else {
 							ctx.resolve();
 						}
@@ -90,52 +120,78 @@ export class JsExecutor {
 					break;
 				}
 				case 'main-thread-access': {
-					const handler = this._handler[packet.method];
-					// @ts-ignore
-					const response = await handler(...packet.params);
+					const handler = this._ctx[request.method] as any;
 
-					const stringifiedResp = JSON.stringify(['resp-' + packet.method, response]);
-					const stringifiedRespLength = stringifiedResp.length;
-					for (let i = 0; i < stringifiedRespLength; i++) {
-						sharedData[i + 1] = stringifiedResp.charCodeAt(i);
+					let result: any;
+					let error: Error | undefined;
+					try {
+						result = await handler(...request.params);
+					} catch (err) {
+						error = err as Error;
 					}
 
-					sharedData[0] = stringifiedRespLength;
-					Atomics.notify(sharedData, 0);
+					if (typeof request.id === 'number') {
+						// async request
+						const resp: AsyncResultRequest = {
+							type: 'async-execution-result',
+							id: request.id,
+							result,
+							error,
+						};
+
+						this._worker!.postMessage(resp);
+					} else {
+						// sync request
+						const stringifiedResp = JSON.stringify([
+							'resp-' + request.method,
+							result,
+							error && [
+								error.name,
+								error.message
+							]
+						]);
+						const stringifiedRespLength = stringifiedResp.length;
+						for (let i = 0; i < stringifiedRespLength; i++) {
+							sharedData[i + 1] = stringifiedResp.charCodeAt(i);
+						}
+
+						sharedData[0] = stringifiedRespLength;
+						Atomics.notify(sharedData, 0);
+					}
 
 					break;
 				}
 			}
 		});
 
-		const initReq: InitRequest = {
-			type: 'init',
-			sharedArrayBuffer: this._sharedArrayBuffer,
-		};
-
-		this._worker.postMessage(initReq);
+		this._worker.postMessage(this._initRequest);
 		this._next();
 	}
 
 	private async _next() {
-		if (this._inflightExecutionContext)
+		if (this._inflightExecution)
 			return;
 
-		const execution = this._queue.shift();
-		if (!execution)
+		this._inflightExecution = this._queue.shift();
+		if (!this._inflightExecution)
 			return;
 
 		if (!this._worker)
 			this._restartWorker();
 
-		const code = await compile(execution.code, execution.filename);
-		console.log(code);
+		let code = this._inflightExecution.code;
+		if (this._inflightExecution.compileRequired) {
+			code = await compile(this._inflightExecution.code, this._inflightExecution.filename);
+		}
+
 		const execReq: ExecuteCodeRequest = {
 			type: 'execute',
 			code,
-			filename: execution.filename,
+			filename: this._inflightExecution.filename,
 			doExecute: true,
 		};
 		this._worker!.postMessage(execReq);
+
+		this._inflightExecution.timeoutHandler = setTimeout(() => this._inflightExecution?.reject(new Error('timeout')), 5000);
 	}
 }

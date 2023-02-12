@@ -1,8 +1,11 @@
-import { editor, KeyCode, KeyMod, languages } from 'monaco-editor';
-import libRuntimeSource from '../runtime/env.d.ts?raw';
+import { editor, KeyCode, KeyMod, languages } from 'monaco-editor/esm/vs/editor/editor.api';
+import 'monaco-editor/esm/vs/language/typescript/monaco.contribution';
+import 'monaco-editor/esm/vs/basic-languages/monaco.contribution';
+import 'monaco-editor/esm/vs/editor/edcore.main';
+import { JsExecutor } from '../runtime/executor';
+import libRuntimeSource from '../platform/env.d.ts?raw';
 import './worker';
 import './styles.scss';
-import { JsExecutor } from '../runtime/executor';
 
 const $editor = document.getElementById('editor') as HTMLDivElement;
 

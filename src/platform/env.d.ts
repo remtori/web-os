@@ -1,4 +1,4 @@
-declare type ExecuteFunction = (ctx: sandbox.Context) => Promise<any> | any;
+declare type Main = (ctx: sandbox.Context) => Promise<any> | any;
 
 declare namespace sandbox {
 	declare interface NumberInputOptions {
@@ -24,6 +24,25 @@ declare namespace sandbox {
 		write(...args: any[]): void;
 		writeln(...args: any[]): void;
 	}
+
+	export interface TypingInputOptions {
+		kind: 'typing';
+		inputAttrs?: Record<string, any>;
+	}
+
+	export interface ButtonsInputOptions {
+		kind: 'buttons';
+		selections: string[];
+	}
+
+	export type InputOptions = TypingInputOptions | ButtonsInputOptions;
+
+	export interface ContextHandler {
+		log(log: string): void;
+		write(text: string): void;
+		input(options: InputOptions): string;
+	}
+
 }
 
 declare interface Console {

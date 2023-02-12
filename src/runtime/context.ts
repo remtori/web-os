@@ -1,6 +1,12 @@
-import type { ContextHandler } from './types';
+import type { ContextAsyncFuncCallHandler, ContextSyncFuncCallHandler, ExecutionContext } from './types';
 
-export function createSandboxContext(handler: ContextHandler): [Console, sandbox.Context] {
+export function createSandboxContext(
+	contextProps: Record<string, any>,
+	contextSyncFns: string[],
+	contextAsyncFns: string[],
+	syncHandler: ContextSyncFuncCallHandler,
+	asyncHandler: ContextAsyncFuncCallHandler,
+): [Console, ExecutionContext] {
 	const console = {
 		assert(value: any, message?: string, ...optionalParams: any[]) { },
 		count(label?: string) { },
@@ -11,7 +17,7 @@ export function createSandboxContext(handler: ContextHandler): [Console, sandbox
 		warn(...args: any[]) { },
 		error(...args: any[]) { },
 		log(...args: any[]) {
-			handler.log(argsToString(args) + '\n');
+			asyncHandler('log', [argsToString(args) + '\n']);
 		},
 		group(...label: any[]) { },
 		groupCollapsed(...label: any[]) { },
@@ -22,69 +28,19 @@ export function createSandboxContext(handler: ContextHandler): [Console, sandbox
 		timeLog(label?: string, ...data: any[]) { },
 	} as Console;
 
-	const context: sandbox.Context = {
-		readFloat(prompt, options = {}) {
-			if (prompt && prompt.length > 0) {
-				handler.write(prompt + '\n');
-			}
-
-			const out = handler.input({
-				kind: 'typing',
-				inputAttrs: {
-					step: '0.2',
-					...options,
-					type: 'number',
-				}
-			});
-
-			return parseFloat(out);
-		},
-		readInt(prompt, options = {}) {
-			if (prompt && prompt.length > 0) {
-				handler.write(prompt + '\n');
-			}
-
-			const out = handler.input({
-				kind: 'typing',
-				inputAttrs: {
-					...options,
-					type: 'number',
-				}
-			});
-
-			return parseInt(out);
-		},
-		readString(prompt, options = {}) {
-			if (prompt && prompt.length > 0) {
-				handler.write(prompt + '\n');
-			}
-
-			return handler.input({
-				kind: 'typing',
-				inputAttrs: {
-					...options,
-					type: 'text',
-				}
-			});
-		},
-		readSelections(prompt, selections) {
-			if (prompt && prompt.length > 0) {
-				handler.write(prompt + '\n');
-			}
-
-			return handler.input({
-				kind: 'buttons',
-				selections,
-			});
-		},
-		write(...args: any[]) {
-			handler.write(argsToString(args));
-		},
-		writeln(...args: any[]) {
-			handler.write(argsToString(args) + '\n');
-		}
+	const context: ExecutionContext = {
+		...contextProps
 	};
 
+	for (const fnName of contextSyncFns) {
+		context[fnName] = (...args: any[]) => syncHandler(fnName, args);
+	}
+
+	for (const fnName of contextAsyncFns) {
+		context[fnName] = (...args: any[]) => asyncHandler(fnName, args);
+	}
+
+	deepFreeze(context);
 	return [console, context];
 }
 
@@ -95,4 +51,18 @@ function argsToString(args: any[]): string {
 	}
 
 	return str;
+}
+
+function deepFreeze(object: any) {
+	const stack = [object];
+	while (stack.length > 0) {
+		const o = stack.shift();
+		if (!Object.isFrozen(o)) {
+			for (const key in Object.getOwnPropertyNames(o)) {
+				stack.push(o[key]);
+			}
+
+			Object.freeze(o);
+		}
+	}
 }
