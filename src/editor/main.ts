@@ -48,18 +48,6 @@ editor.addKeybindingRules([
 	}
 ]);
 
-const executor = new JsExecutor({
-	async log(text) {
-		console.log(text);
-	},
-	async write(text) {
-		console.log(text);
-	},
-	async input(options) {
-		return '42';
-	}
-});
-
 editor.addEditorAction({
 	id: 'web-sandbox.run',
 	label: 'Run the code!',
@@ -69,7 +57,7 @@ editor.addEditorAction({
 	run: (ed) => {
 		const code = ed.getValue();
 		localStorage.setItem('code', code);
-		executor.execute(code, 'scriptFromEditor.js');
+		// executor.execute(code, 'scriptFromEditor.js');
 	},
 });
 

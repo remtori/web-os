@@ -6,10 +6,7 @@ export interface WorkerContext {
 
 export type ExecutionContext = Record<string | number, any>;
 
-export type ExecutorExecutionContext = {
-	log: (text: string) => void | Promise<void>;
-	[key: string | number]: any;
-}
+export type ExecutionContextFuncs = Record<string, Function>;
 
 export interface InitRequest {
 	type: 'init';

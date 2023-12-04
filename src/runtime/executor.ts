@@ -1,5 +1,5 @@
 import { compile } from './compiler';
-import { ExecuteCodeRequest, InitRequest, WorkerResponse, ExecutionContext, AsyncResultRequest, ExecutorExecutionContext } from './types';
+import { ExecuteCodeRequest, InitRequest, WorkerResponse, ExecutionContext, AsyncResultRequest, ExecutionContextFuncs } from './types';
 import JsWorker from './runtime-worker?worker';
 
 class ExecutionError extends Error {
@@ -24,35 +24,20 @@ export class JsExecutor {
 	private _queue: Execution[];
 
 	private _initRequest: InitRequest;
-	private _ctx: ExecutionContext;
+	private _ctx: ExecutionContextFuncs;
 
-	constructor(ctx: ExecutorExecutionContext) {
+	private constructor(syncFns: string[], asyncFns: string[], props: ExecutionContext, funcs: ExecutionContextFuncs) {
 		const size = 1024 * 1024 * 1024;
 
 		this._queue = [];
-		this._ctx = ctx;
-
-		const contextSyncFns = [];
-		const contextAsyncFns = [];
-		const contextProps: any = {};
-		for (const [key, value] of Object.entries(ctx)) {
-			if (typeof value === 'function') {
-				if ((value as Function).constructor.name === 'AsyncFunction') {
-					contextAsyncFns.push(key);
-				} else {
-					contextSyncFns.push(key);
-				}
-			} else {
-				contextProps[key] = value;
-			}
-		}
+		this._ctx = funcs;
 
 		this._initRequest = {
 			type: 'init',
 			sharedArrayBuffer: new SharedArrayBuffer(size),
-			contextProps,
-			contextSyncFns,
-			contextAsyncFns,
+			contextProps: props,
+			contextSyncFns: syncFns,
+			contextAsyncFns: asyncFns,
 		}
 		this._restartWorker();
 	}

@@ -6,8 +6,17 @@
     <title>Web Sandbox</title>
   </head>
   <body>
-	<!-- <iframe width="720" height="800" sandbox="allow-same-origin allow-scripts" src="/embed.html"></iframe> -->
-	<div id="editor"></div>
-	<script type="module" src="./src/editor/main.ts"></script>
+	<div class="container">
+		<div id="chatHistory">
+		</div>
+
+		<div class="input-group">
+			<button>Option 1</button>
+			<button>Option 2</button>
+			<button>Option 3</button>
+			<input id="input" type="text" />
+		</div>
+	</div>
+	<script type="module" src="./src/main.ts"></script>
   </body>
 </html>

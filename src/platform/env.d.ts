@@ -1,4 +1,5 @@
 declare type Main = (ctx: sandbox.Context) => Promise<any> | any;
+declare type Meta = sandbox.Meta;
 
 declare namespace sandbox {
 	declare interface NumberInputOptions {
@@ -8,7 +9,7 @@ declare namespace sandbox {
 	}
 
 	declare interface StringInputOptions {
-		pattern?: RegExp;
+		pattern?: string;
 		minlength?: number;
 		maxlength?: number;
 	}
@@ -19,30 +20,16 @@ declare namespace sandbox {
 
 		readString(prompt?: string, options?: StringInputOptions): string;
 
-		readSelections(prompt?: string, selections: string[]): string;
+		readSelections(selections: string[]): string;
+		readSelections(prompt: string, selections: string[]): string;
 
 		write(...args: any[]): void;
 		writeln(...args: any[]): void;
 	}
 
-	export interface TypingInputOptions {
-		kind: 'typing';
-		inputAttrs?: Record<string, any>;
+	declare interface Meta {
+		description: string;
 	}
-
-	export interface ButtonsInputOptions {
-		kind: 'buttons';
-		selections: string[];
-	}
-
-	export type InputOptions = TypingInputOptions | ButtonsInputOptions;
-
-	export interface ContextHandler {
-		log(log: string): void;
-		write(text: string): void;
-		input(options: InputOptions): string;
-	}
-
 }
 
 declare interface Console {
