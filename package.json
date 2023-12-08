@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-	"typecheck": "tsc"
+    "typecheck": "tsc"
   },
   "dependencies": {
     "@fortawesome/free-regular-svg-icons": "^6.5.1",
@@ -21,6 +21,7 @@
     "tailwindcss": "^3.3.5",
     "typescript": "^5.3.2",
     "vite": "^4.5.1",
-    "vite-plugin-solid": "^2.7.2"
+    "vite-plugin-solid": "^2.7.2",
+    "vite-tsconfig-paths": "^4.2.1"
   }
 }

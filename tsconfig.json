@@ -15,7 +15,11 @@
     "isolatedModules": true,
     "noEmit": true,
 	"jsx": "preserve",
-    "jsxImportSource": "solid-js"
+    "jsxImportSource": "solid-js",
+	"paths": {
+		"@core/*": ["./src/core/*"],
+		"@kernel/*": ["./src/kernel/*"],
+	}
   },
   "include": ["src"],
 }
