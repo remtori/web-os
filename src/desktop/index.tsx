@@ -1,7 +1,9 @@
-import { Accessor, Setter, createEffect, createSignal, onCleanup } from 'solid-js';
+import type { JSX } from 'solid-js';
+import { Accessor, Component, Setter, batch, children, createEffect, createSignal, onCleanup } from 'solid-js';
 import Fa from 'solid-fa';
 import { faMinus, faXmark, faExpand } from '@fortawesome/free-solid-svg-icons';
 import { faWindowMaximize } from '@fortawesome/free-regular-svg-icons';
+import { $fs } from '@kernel/filesystem/VirtualFileSystem';
 
 declare module 'solid-js' {
 	namespace JSX {
@@ -37,10 +39,15 @@ function draggable(element: HTMLElement, accessor: Accessor<DirectiveDraggableOp
 	function handleDragMove(e: PointerEvent) {
 		e.preventDefault();
 
-		setX((x) => x + (e.clientX - currX));
-		setY((y) => y + (e.clientY - currY));
+		const movementX = e.clientX - currX;
+		const movementY = e.clientY - currY;
 		currX = e.clientX;
 		currY = e.clientY;
+
+		batch(() => {
+			setX((x) => x + movementX);
+			setY((y) => y + movementY);
+		});
 	}
 
 	function handleDragEnd(e: PointerEvent) {
@@ -88,47 +95,49 @@ function resizable(element: HTMLElement, accessor: Accessor<DirectiveResizableOp
 	function handleDragMove(e: PointerEvent) {
 		e.preventDefault();
 
-		const movementX = e.clientX - currX;
-		const movementY = e.clientY - currY;
-		currX = e.clientX;
-		currY = e.clientY;
+		batch(() => {
+			const movementX = e.clientX - currX;
+			const movementY = e.clientY - currY;
+			currX = e.clientX;
+			currY = e.clientY;
 
-		switch (direction) {
-			case 'n':
-				setY((y) => y + movementY);
-				setHeight((h) => h - movementY);
-				break;
-			case 's':
-				setHeight((h) => h + movementY);
-				break;
-			case 'w':
-				setX((x) => x + movementX);
-				setWidth((w) => w - movementX);
-				break;
-			case 'e':
-				setWidth((w) => w + movementX);
-				break;
-			case 'nw':
-				setX((x) => x + movementX);
-				setY((y) => y + movementY);
-				setHeight((h) => h - movementY);
-				setWidth((w) => w - movementX);
-				break;
-			case 'ne':
-				setY((y) => y + movementY);
-				setHeight((h) => h - movementY);
-				setWidth((w) => w + movementX);
-				break;
-			case 'sw':
-				setX((x) => x + movementX);
-				setHeight((h) => h + movementY);
-				setWidth((w) => w - movementX);
-				break;
-			case 'se':
-				setHeight((h) => h + movementY);
-				setWidth((w) => w + movementX);
-				break;
-		}
+			switch (direction) {
+				case 'n':
+					setY((y) => y + movementY);
+					setHeight((h) => h - movementY);
+					break;
+				case 's':
+					setHeight((h) => h + movementY);
+					break;
+				case 'w':
+					setX((x) => x + movementX);
+					setWidth((w) => w - movementX);
+					break;
+				case 'e':
+					setWidth((w) => w + movementX);
+					break;
+				case 'nw':
+					setX((x) => x + movementX);
+					setY((y) => y + movementY);
+					setHeight((h) => h - movementY);
+					setWidth((w) => w - movementX);
+					break;
+				case 'ne':
+					setY((y) => y + movementY);
+					setHeight((h) => h - movementY);
+					setWidth((w) => w + movementX);
+					break;
+				case 'sw':
+					setX((x) => x + movementX);
+					setHeight((h) => h + movementY);
+					setWidth((w) => w - movementX);
+					break;
+				case 'se':
+					setHeight((h) => h + movementY);
+					setWidth((w) => w + movementX);
+					break;
+			}
+		});
 	}
 
 	function handleDragEnd(e: PointerEvent) {
@@ -147,7 +156,9 @@ function resizable(element: HTMLElement, accessor: Accessor<DirectiveResizableOp
 	});
 }
 
-function WindowWidget() {
+const WindowWidget: Component<{ children: JSX.Element }> = (props) => {
+	const content = children(() => props.children);
+
 	const [x, setX] = createSignal(100);
 	const [y, setY] = createSignal(200);
 	const [width, setWidth] = createSignal(400);
@@ -162,10 +173,6 @@ function WindowWidget() {
 			element.style.setProperty('height', `${height()}px`);
 		});
 	};
-
-	// const windowMenuBar = (element: HTMLElement) => {
-	// 	const removeHandler = draggable(element, setX, setY);
-	// };
 
 	return (
 		<div ref={windowContainer} class='absolute shadow-lg flex flex-col justify-start items-center'>
@@ -189,10 +196,7 @@ function WindowWidget() {
 					</button>
 				</div>
 			</div>
-			<div class='rounded-b-md w-full bg-white opacity-80 flex flex-grow flex-col'>
-				<h1 class='text-2xl font-bold text-center'>SolidJS</h1>
-				<p class='text-center'>Hello World!</p>
-			</div>
+			<div class='rounded-b-md w-full bg-white opacity-80 flex flex-grow flex-col'>{content()}</div>
 
 			<div
 				use:resizable={{ setX, setY, setWidth, setHeight, direction: 'e' }}
@@ -228,13 +232,18 @@ function WindowWidget() {
 			/>
 		</div>
 	);
-}
+};
 
 export function App() {
+	(window as any).fs = $fs;
+
 	return (
 		<div class='select-none bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 backdrop-blur-md h-screen w-screen flex flex-col'>
 			<div class='flex flex-grow'>
-				<WindowWidget />
+				<WindowWidget>
+					<h1 class='text-2xl font-bold text-center'>SolidJS</h1>
+					<p class='text-center'>Hello World!</p>
+				</WindowWidget>
 			</div>
 			<div class='h-12 bg-white bg-opacity-50 flex justify-center flex-row'>
 				<div class='flex justify-center items-center p-2'>
