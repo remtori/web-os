@@ -1,21 +1,50 @@
 import { AsyncResult, ErrorCode, err, ok } from '@core/result';
-import { $File, $FileDescriptor, $FileMetadata, $ReadWriteFile, SeekWhence } from '../File';
+import {
+	$File,
+	$FileDescriptor,
+	$FileMetadata,
+	$SimpleFile,
+	$FileHelper,
+	SeekWhence,
+	$CreateFileOptions,
+	$RemoveFileOptions,
+} from '../File';
 import { $FileSystem } from '../FileSystem';
 
-class $RamFile extends $ReadWriteFile {
+class $RamFile extends $SimpleFile implements $FileDescriptor {
+	private _fs: $FileSystem;
 	private _name: string;
 	private _children: Map<string, $File>;
 
 	private _data: Uint8Array;
 	private _dataLength: number;
+	private _offset: number;
 
-	constructor(parent: $File | undefined, name: string, metadata?: Partial<$FileMetadata>) {
-		super(parent, metadata);
+	constructor(fs: $FileSystem, name: string, metadata?: Partial<$FileMetadata>) {
+		super(metadata);
 
+		this._fs = fs;
 		this._name = name;
+		this._children = new Map();
+
 		this._data = new Uint8Array(0);
 		this._dataLength = 0;
-		this._children = new Map();
+		this._offset = 0;
+	}
+
+	fs(): $FileSystem {
+		return this._fs;
+	}
+
+	file(): $File | undefined {
+		return this;
+	}
+
+	close(): AsyncResult<void> {
+		throw new Error('Method not implemented.');
+	}
+	offset(): number {
+		throw new Error('Method not implemented.');
 	}
 
 	name(): string {
@@ -44,7 +73,7 @@ class $RamFile extends $ReadWriteFile {
 			return err(ErrorCode.FileIsADirectory);
 		}
 
-		const ret = this.seekCursor(offset, whence);
+		const ret = $FileHelper.seek(offset, whence, this._offset, this._dataLength);
 		if (!ret.ok) {
 			return ret;
 		}
@@ -107,7 +136,7 @@ class $RamFile extends $ReadWriteFile {
 		return ok(child);
 	}
 
-	async addChild(file: $File, name: string): AsyncResult<void> {
+	async createChild(name: string, options?: $CreateFileOptions): AsyncResult<$File> {
 		if (!this.isDirectory()) {
 			return err(ErrorCode.FileIsNotADirectory);
 		}
@@ -116,22 +145,42 @@ class $RamFile extends $ReadWriteFile {
 			return err(ErrorCode.FileAlreadyExists);
 		}
 
-		file.__setParent(this);
+		const file = new $RamFile(this._fs, name, {
+			isDirectory: options?.isDirectory ?? false,
+		});
 		this._children.set(name, file);
-		return ok();
+		return ok(file);
 	}
 
-	async removeChild(name: string): AsyncResult<void> {
+	async removeChild(name: string, options?: $RemoveFileOptions): AsyncResult<void> {
 		if (!this.isDirectory()) {
 			return err(ErrorCode.FileIsNotADirectory);
 		}
 
-		const success = this._children.delete(name);
-		if (!success) {
+		if (options?.recursive) {
+			const success = this._children.delete(name);
+			if (!success) {
+				return err(ErrorCode.FileNotFound);
+			}
+
+			return ok();
+		}
+
+		const child = this._children.get(name);
+		if (!child) {
 			return err(ErrorCode.FileNotFound);
 		}
 
+		if (child.isDirectory()) {
+			return err(ErrorCode.FileIsADirectory);
+		}
+
+		this._children.delete(name);
 		return ok();
+	}
+
+	static instanceOf(instance: $File): instance is $RamFile {
+		return instance.fs() instanceof $RamFS;
 	}
 }
 
@@ -139,7 +188,7 @@ export class $RamFS implements $FileSystem {
 	private _root: $RamFile;
 
 	constructor() {
-		this._root = new $RamFile(undefined, '', {
+		this._root = new $RamFile(this, '<RamFS>', {
 			isDirectory: true,
 		});
 	}
@@ -150,26 +199,5 @@ export class $RamFS implements $FileSystem {
 
 	root(): $File {
 		return this._root;
-	}
-
-	mkdir(base: $File, name: string): AsyncResult<void> {
-		const folder = new $RamFile(base, name, {
-			isDirectory: true,
-		});
-
-		return base.addChild(folder, name);
-	}
-
-	async create(base: $File, name: string): AsyncResult<$File> {
-		const file = new $RamFile(base, name, {
-			isRegularFile: true,
-		});
-
-		const ret = await base.addChild(file, name);
-		if (!ret.ok) {
-			return ret;
-		}
-
-		return ok(file);
 	}
 }

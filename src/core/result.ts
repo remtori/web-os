@@ -15,11 +15,25 @@ export function err<T>(error: ErrorCode): Result<T> {
 export enum ErrorCode {
 	Ok = 0,
 	NotImplemented,
+	PermissionDenied,
 	FileNotFound,
 	FileAlreadyExists,
 	FileIsNotADirectory,
 	FileIsADirectory,
 	InvalidArgument,
+	InvalidOffset,
 	InvalidPath,
 	NotAbsolutePath,
+	WrongFileSystem,
+	UnknownError,
 }
+
+export const wrapAsync = async <T>(promise: Promise<T>, mapError: (err: Error) => ErrorCode): AsyncResult<T> => {
+	try {
+		const value = await promise;
+		return ok(value);
+	} catch (anyError) {
+		const error = anyError as Error;
+		return err(mapError(error));
+	}
+};

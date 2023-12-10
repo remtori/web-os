@@ -1,12 +1,10 @@
-import { Result, ok, err, AsyncResult } from '@core/result';
+import { AsyncResult } from '@core/result';
 import { $File } from './File';
+import { $Custody } from './Custody';
 
 export interface $FileSystem {
 	initialize(): AsyncResult<void>;
 
 	root(): $File;
-
-	lookup?(path: string): AsyncResult<$File | undefined>;
-	mkdir(base: $File, name: string): AsyncResult<void>;
-	create(base: $File, name: string): AsyncResult<$File>;
+	lookup?(base: $Custody, path: string): AsyncResult<$File | undefined>;
 }
