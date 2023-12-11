@@ -3,7 +3,7 @@ import { Accessor, Component, Setter, batch, children, createEffect, createSigna
 import Fa from 'solid-fa';
 import { faMinus, faXmark, faExpand } from '@fortawesome/free-solid-svg-icons';
 import { faWindowMaximize } from '@fortawesome/free-regular-svg-icons';
-import { $fs } from '@kernel/filesystem/VirtualFileSystem';
+import { Process } from '@kernel/Process';
 
 declare module 'solid-js' {
 	namespace JSX {
@@ -235,7 +235,13 @@ const WindowWidget: Component<{ children: JSX.Element }> = (props) => {
 };
 
 export function App() {
-	(window as any).fs = $fs;
+	const windowContent = async (root: HTMLElement) => {
+		const resp = await fetch('/__/apps/explorer.js');
+		const code = await resp.text();
+
+		const process = new Process(root, code);
+		(window as any).process = process;
+	};
 
 	return (
 		<div class='select-none bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 backdrop-blur-md h-screen w-screen flex flex-col'>
@@ -243,6 +249,9 @@ export function App() {
 				<WindowWidget>
 					<h1 class='text-2xl font-bold text-center'>SolidJS</h1>
 					<p class='text-center'>Hello World!</p>
+				</WindowWidget>
+				<WindowWidget>
+					<div ref={windowContent} />
 				</WindowWidget>
 			</div>
 			<div class='h-12 bg-white bg-opacity-50 flex justify-center flex-row'>

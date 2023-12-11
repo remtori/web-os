@@ -17,12 +17,12 @@
 		"jsx": "preserve",
 		"jsxImportSource": "solid-js",
 		"paths": {
-			"@core/*": ["./src/core/*"],
-			"@kernel/*": ["./src/kernel/*"]
+			"app-sandbox": ["./renderer/index.ts"]
 		}
 	},
 	"include": [
-		"./src/**/*",
-		"./userspace/syscall.d.ts",
+		"./syscall.d.ts",
+		"./renderer/**/*",
+		"./apps/**/*"
 	]
 }
