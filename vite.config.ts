@@ -45,7 +45,12 @@ function multipleAssetsPlugin(extraAssetsDir: string[]) {
 									'Content-Length': stat.size,
 								});
 
-								fs.createReadStream(path).pipe(res);
+								const fileStream = fs.createReadStream(path);
+								fileStream.pipe(res);
+								res.on('close', () => {
+									fileStream.close();
+								});
+
 								return;
 							}
 						}
