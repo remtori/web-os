@@ -16,13 +16,5 @@
 		"noEmit": true,
 		"jsx": "preserve",
 		"jsxImportSource": "solid-js",
-		"paths": {
-			"@core/*": ["./src/core/*"],
-			"@kernel/*": ["./src/kernel/*"]
-		}
 	},
-	"include": [
-		"./src/**/*",
-		"./userspace/syscall.d.ts",
-	]
 }

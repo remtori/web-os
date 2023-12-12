@@ -1,6 +1,0 @@
-{
-	"scripts": {
-		"build": "vite build",
-		"dev": "vite build --watch --mode development"
-	}
-}

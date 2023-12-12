@@ -1,0 +1,7 @@
+{
+	"type": "module",
+	"scripts": {
+		"dev": "vite build --watch --mode development",
+		"build": "vite build"
+	}
+}

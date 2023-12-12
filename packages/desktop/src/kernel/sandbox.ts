@@ -1,12 +1,27 @@
 export type WorkerId = number;
 
+declare const __SANDBOX_URL__: string;
+
 export const sandbox = (function () {
-	const sandboxElement = document.getElementById('sandbox') as HTMLIFrameElement;
+	const sandboxElement = document.createElement('iframe');
+	sandboxElement.sandbox.add('allow-scripts');
+	sandboxElement.sandbox.add('allow-same-origin');
+	sandboxElement.src = __SANDBOX_URL__;
+	sandboxElement.style.display = 'none';
+	document.body.appendChild(sandboxElement);
 
 	let resolveSandboxReady: () => void;
 	const sandboxReady = new Promise<void>((resolve) => {
 		resolveSandboxReady = resolve;
 	});
+
+	const warnFailedToLoadSandboxTimeout = setTimeout(() => {
+		console.warn(
+			'[Kernel] failed to load sandbox, if you are running locally, try to visit and accept the certificate at',
+			__SANDBOX_URL__
+		);
+	}, 1000);
+	sandboxReady.then(() => clearTimeout(warnFailedToLoadSandboxTimeout));
 
 	const pendingSpawnWorkers: ((workerId: number) => void)[] = [];
 	window.addEventListener('message', (e) => {
@@ -21,8 +36,10 @@ export const sandbox = (function () {
 
 	return {
 		async spawnWorker(port: MessagePort, code: string): Promise<WorkerId> {
+			console.log('[Kernel] waiting for sandbox to be ready');
 			await sandboxReady;
 
+			console.log('[Kernel] spawning process');
 			sandboxElement.contentWindow!.postMessage(
 				{
 					type: 'spawnWorker',

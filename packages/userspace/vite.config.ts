@@ -12,11 +12,6 @@ export default defineConfig(({ mode }) => ({
 			},
 		}),
 	],
-	resolve: {
-		alias: {
-			'app-sandbox': resolve(__dirname, 'renderer/index.ts'),
-		},
-	},
 	build: {
 		sourcemap: mode === 'production' ? true : 'inline',
 		lib: {
@@ -24,11 +19,19 @@ export default defineConfig(({ mode }) => ({
 			entry: {
 				explorer: resolve(__dirname, 'apps/explorer/index.ts'),
 			},
-			formats: ['es'],
+			formats: ['iife'],
 			fileName(_format, entryName) {
 				return `${entryName}.js`;
 			},
 		},
 		outDir: resolve(__dirname, 'dist/__/apps'),
+		rollupOptions: {
+			external: 'app-sandbox',
+			output: {
+				globals: {
+					'app-sandbox': '__exports__AppSandbox',
+				},
+			},
+		},
 	},
 }));

@@ -1,17 +1,20 @@
 import type { Syscall, SystemMessage } from 'virtual:syscall';
 
 class SyscallMessageChannel {
-	private _channel: MessagePort;
+	private _channel: MessagePort | undefined;
 
 	private _messageBatch: Syscall[] = [];
 	private _deferredTimeout: number;
 
-	constructor(channel: MessagePort) {
-		this._channel = channel;
+	constructor() {
 		this._messageBatch = [];
 		this._deferredTimeout = 0;
+	}
 
+	__init(channel: MessagePort) {
+		this._channel = channel;
 		this._channel.onmessage = this.onMessage;
+		this.flush();
 	}
 
 	private onMessage = (e: MessageEvent) => {
@@ -22,7 +25,7 @@ class SyscallMessageChannel {
 				case 'shutdown': {
 					// Note: This should be the only thing that keep this Worker alive.
 					// So by removing the onmessage handler, the Worker should terminate.
-					this._channel.onmessage = null;
+					this._channel!.onmessage = null;
 					break;
 				}
 				default: {
@@ -34,10 +37,12 @@ class SyscallMessageChannel {
 	};
 
 	private flush = () => {
+		clearTimeout(this._deferredTimeout);
 		this._deferredTimeout = 0;
-
-		this._channel.postMessage(this._messageBatch);
-		this._messageBatch.length = 0;
+		if (this._channel) {
+			this._channel.postMessage(this._messageBatch);
+			this._messageBatch.length = 0;
+		}
 	};
 
 	call<Type extends Syscall['type']>(type: Type, params: Extract<Syscall, { type: Type }>['params'][0]) {
@@ -63,6 +68,4 @@ class SyscallMessageChannel {
 	}
 }
 
-declare var $channel: MessagePort;
-
-export const syscall = new SyscallMessageChannel($channel);
+export const syscall = new SyscallMessageChannel();

@@ -5,19 +5,27 @@ import basicSsl from '@vitejs/plugin-basic-ssl';
 import solidPlugin from 'vite-plugin-solid';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
 	plugins: [
 		basicSsl(),
 		solidPlugin(),
 		tsconfigPaths(),
-		multipleAssetsPlugin([resolve(__dirname, './userspace/dist')]),
+		multipleAssetsPlugin([resolve(__dirname, '../userspace/dist')]),
 	],
+	define: {
+		__SANDBOX_URL__: JSON.stringify(
+			mode === 'production' ? 'https://cdn.remtori.com/sandbox/index.html' : 'https://localhost:5992'
+		),
+	},
 	build: {
 		rollupOptions: {
 			input: resolve(__dirname, 'index.html'),
 		},
 	},
-});
+	server: {
+		port: 5991,
+	},
+}));
 
 function multipleAssetsPlugin(extraAssetsDir: string[]) {
 	return {
