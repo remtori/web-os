@@ -18,7 +18,7 @@ export const sandbox = (function () {
 	const warnFailedToLoadSandboxTimeout = setTimeout(() => {
 		console.warn(
 			'[Kernel] failed to load sandbox, if you are running locally, try to visit and accept the certificate at',
-			__SANDBOX_URL__
+			sandboxElement.src
 		);
 	}, 1000);
 	sandboxReady.then(() => clearTimeout(warnFailedToLoadSandboxTimeout));
