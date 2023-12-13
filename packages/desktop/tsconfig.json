@@ -7,7 +7,7 @@
 		}
 	},
 	"include": [
+		"../userspace/syscall.d.ts",
 		"./src/**/*",
-		"./userspace/syscall.d.ts",
 	]
 }
