@@ -11,7 +11,7 @@ const onMessage = (event: MessageEvent) => {
 		try {
 			fn(theLib);
 		} catch (anyError) {
-			console.log('error', anyError);
+			console.log('[Sandbox] error', anyError);
 		}
 
 		self.removeEventListener('message', onMessage, true);

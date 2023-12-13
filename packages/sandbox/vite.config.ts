@@ -8,6 +8,7 @@ export default defineConfig(({ mode }) => ({
 	plugins: [basicSsl()],
 	define: {
 		__WORKER_MODE__: JSON.stringify(mode === 'production' ? 'classic' : 'module'),
+		__DEV__: JSON.stringify(mode !== 'production'),
 	},
 	worker: {
 		format: 'iife',

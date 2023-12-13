@@ -3,8 +3,6 @@ import workerUrl from './entry.worker?worker&url';
 const workers = new Map<number, Worker>();
 let workerIdGen = 0;
 
-declare const __WORKER_MODE__: 'classic' | 'module';
-
 function spawnWorker(code: string, port: MessagePort) {
 	const worker = new Worker(workerUrl, { type: __WORKER_MODE__ });
 	worker.postMessage({ type: 'init', code }, [port]);
