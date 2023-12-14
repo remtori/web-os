@@ -23,6 +23,8 @@ jobs:
           accountId: a3900b672541bad0e93684916832e4aa
           projectName: web-os
           directory: dist/desktop
+          branch: master
+          wranglerVersion: '3'
       - name: Upload to S3
         uses: remtori/gh-action-s3-upload@master
         with:
