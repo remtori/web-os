@@ -24,7 +24,10 @@ export default defineConfig(({ mode }) => ({
 				return `${entryName}.js`;
 			},
 		},
-		outDir: resolve(__dirname, '../../dist/userspace/apps'),
+		outDir:
+			mode === 'production'
+				? resolve(__dirname, '../../dist/desktop/apps')
+				: resolve(__dirname, '../../dist/userspace/apps'),
 		rollupOptions: {
 			external: 'app-sandbox',
 			output: {

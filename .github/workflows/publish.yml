@@ -1,0 +1,33 @@
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    name: Publish to Cloudflare Pages
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Build
+        run: npm run build
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: a3900b672541bad0e93684916832e4aa
+          projectName: web-os
+          directory: dist/desktop
+      - name: Upload to S3
+        uses: remtori/gh-action-s3-upload@master
+        with:
+          aws_key_id: ${{ secrets.AWS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
+          endpoint: ${{ secrets.AWS_ENDPOINT }}
+          aws_bucket: ${{ secrets.AWS_BUCKET }}
+          source_dir: dist/sandbox
+          destination_dir: /sandbox
