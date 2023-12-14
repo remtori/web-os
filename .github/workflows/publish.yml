@@ -31,4 +31,4 @@ jobs:
           endpoint: ${{ secrets.AWS_ENDPOINT }}
           aws_bucket: ${{ secrets.AWS_BUCKET }}
           source_dir: dist/sandbox
-          destination_dir: /sandbox
+          destination_dir: sandbox
