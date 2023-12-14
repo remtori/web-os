@@ -34,6 +34,7 @@ export default defineConfig(({ mode }) => ({
 	},
 	build: {
 		modulePreload: false,
+		outDir: resolve(__dirname, '../../dist/sandbox'),
 		rollupOptions: {
 			input: resolve(__dirname, 'index.html'),
 			output: {

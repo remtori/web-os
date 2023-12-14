@@ -236,7 +236,7 @@ const WindowWidget: Component<{ children: JSX.Element }> = (props) => {
 
 export function App() {
 	const windowContent = async (root: HTMLElement) => {
-		const resp = await fetch('/__/apps/explorer.js');
+		const resp = await fetch('/apps/explorer.js');
 		const code = await resp.text();
 
 		const process = new Process(root, code);

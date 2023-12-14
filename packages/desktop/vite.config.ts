@@ -10,7 +10,7 @@ export default defineConfig(({ mode }) => ({
 		basicSsl(),
 		solidPlugin(),
 		tsconfigPaths(),
-		multipleAssetsPlugin([resolve(__dirname, '../userspace/dist')]),
+		multipleAssetsPlugin([resolve(__dirname, '../../dist/userspace')]),
 	],
 	define: {
 		__SANDBOX_URL__: JSON.stringify(
@@ -18,6 +18,7 @@ export default defineConfig(({ mode }) => ({
 		),
 	},
 	build: {
+		outDir: resolve(__dirname, '../../dist/desktop'),
 		rollupOptions: {
 			input: resolve(__dirname, 'index.html'),
 		},

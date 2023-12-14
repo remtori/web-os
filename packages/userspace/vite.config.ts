@@ -24,7 +24,7 @@ export default defineConfig(({ mode }) => ({
 				return `${entryName}.js`;
 			},
 		},
-		outDir: resolve(__dirname, 'dist/__/apps'),
+		outDir: resolve(__dirname, '../../dist/userspace/apps'),
 		rollupOptions: {
 			external: 'app-sandbox',
 			output: {
