@@ -64,7 +64,7 @@ export function createDomNode(nodeTypeOrTextContent: string, isTextNode: boolean
 		} as DomNode;
 	}
 
-	syscall.call('ui/node/create', {
+	syscall.ui.node.create.mutate({
 		nodeId: node.nodeId,
 		nodeType: node.nodeType,
 		value: node.value,
@@ -91,9 +91,9 @@ export function removeNode(parent: DomElementNode, node: DomNode, removeFromPare
 		node.properties.clear();
 	}
 
-	syscall.call('ui/node/remove', {
-		nodeId: node.nodeId,
-		parentNodeId: parent.nodeId,
+	syscall.ui.node.remove.mutate({
+		parent: parent.nodeId,
+		node: node.nodeId,
 	});
 
 	if (pooledDomNode.length < POOL_CAPACITY) {
@@ -102,10 +102,10 @@ export function removeNode(parent: DomElementNode, node: DomNode, removeFromPare
 }
 
 export function insertBefore(parent: DomElementNode, node: DomNode, anchor?: DomNode): void {
-	syscall.call('ui/node/insert', {
-		nodeId: node.nodeId,
-		parentNodeId: parent.nodeId,
-		anchorNodeId: anchor?.nodeId ?? -1,
+	syscall.ui.node.insert.mutate({
+		node: node.nodeId,
+		parent: parent.nodeId,
+		anchor: anchor?.nodeId ?? -1,
 	});
 
 	node.parent = parent;
@@ -122,16 +122,16 @@ export function insertBefore(parent: DomElementNode, node: DomNode, anchor?: Dom
 
 export function replaceText(textNode: DomTextNode, value: string): void {
 	textNode.value = value;
-	syscall.call('ui/node/replaceText', {
-		nodeId: textNode.nodeId,
+	syscall.ui.node.replaceText.mutate({
+		node: textNode.nodeId,
 		value,
 	});
 }
 
 export function setProperty(node: DomElementNode, name: string, value: any): void {
 	node.properties.set(name, value);
-	syscall.call('ui/node/setProperty', {
-		nodeId: node.nodeId,
+	syscall.ui.node.setProperty.mutate({
+		node: node.nodeId,
 		name,
 		value,
 	});

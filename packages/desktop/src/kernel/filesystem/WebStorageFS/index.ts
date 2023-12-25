@@ -65,6 +65,7 @@ class $WebStorageDirectory extends $SimpleFile {
 	}
 
 	async dirEntries(): AsyncResult<string[]> {
+		// @ts-ignore
 		return ok(Array.from(await this._handle.keys()));
 	}
 

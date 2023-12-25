@@ -1,71 +1,49 @@
-import type { Syscall, SystemMessage } from 'virtual:syscall';
+import { rpcLink } from '@trpc-adapter/client';
+import type { SysRouter } from '../../desktop/src/kernel/syscall/index';
+import { createTRPCProxyClient } from '@trpc/client';
+import EventEmitter from 'eventemitter3';
 
-class SyscallMessageChannel {
-	private _channel: MessagePort | undefined;
+type TransportEvent = {
+	open: [];
+	message: [data: any];
+	close: [];
+};
 
-	private _messageBatch: Syscall[] = [];
-	private _deferredTimeout: number;
+const clientTransport = new (class extends EventEmitter<TransportEvent> {
+	_port: MessagePort | undefined;
 
-	constructor() {
-		this._messageBatch = [];
-		this._deferredTimeout = 0;
+	initChannel(channel: MessagePort) {
+		this._port = channel;
+		this._port.onmessage = (event) => {
+			this.emit('message', event.data);
+		};
+
+		this.emit('open');
 	}
 
-	__init(channel: MessagePort) {
-		this._channel = channel;
-		this._channel.onmessage = this.onMessage;
-		this.flush();
+	send(data: any): void {
+		this._port!.postMessage(data);
 	}
 
-	private onMessage = (e: MessageEvent) => {
-		const messages = e.data as SystemMessage[];
-		for (let i = 0; i < messages.length; i++) {
-			const message = messages[i];
-			switch (message.type) {
-				case 'shutdown': {
-					// Note: This should be the only thing that keep this Worker alive.
-					// So by removing the onmessage handler, the Worker should terminate.
-					this._channel!.onmessage = null;
-					break;
-				}
-				default: {
-					console.warn('Unhandled system message', message);
-					break;
-				}
-			}
-		}
-	};
-
-	private flush = () => {
-		clearTimeout(this._deferredTimeout);
-		this._deferredTimeout = 0;
-		if (this._channel) {
-			this._channel.postMessage(this._messageBatch);
-			this._messageBatch.length = 0;
-		}
-	};
-
-	call<Type extends Syscall['type']>(type: Type, params: Extract<Syscall, { type: Type }>['params'][0]) {
-		let batched = false;
-		for (let i = 0; i < this._messageBatch.length; i++) {
-			if (this._messageBatch[i].type === type) {
-				this._messageBatch[i].params.push(params as any);
-				batched = true;
-				break;
-			}
-		}
-
-		if (!batched) {
-			this._messageBatch.push({
-				type,
-				params: [params as any],
-			});
-		}
-
-		if (this._deferredTimeout === 0) {
-			this._deferredTimeout = setTimeout(this.flush, 0) as any;
-		}
+	isConnected(): boolean {
+		return !!this._port;
 	}
+
+	close(): void {
+		if (this._port) {
+			this._port.close();
+			this._port.onmessage = null;
+		}
+
+		this._port = undefined;
+		this.emit('close');
+	}
+})();
+
+export function __init(channel: MessagePort) {
+	clientTransport.initChannel(channel);
 }
 
-export const syscall = new SyscallMessageChannel();
+export const syscall = createTRPCProxyClient<SysRouter>({
+	links: [rpcLink({ transport: clientTransport })],
+});

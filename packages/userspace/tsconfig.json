@@ -1,12 +1,10 @@
 {
 	"extends": "../../tsconfig.json",
 	"compilerOptions": {
+		"baseUrl": ".",
 		"paths": {
 			"app-sandbox": ["../sandbox/src/index.ts"]
 		}
 	},
-	"include": [
-		"./syscall.d.ts",
-		"./apps/**/*"
-	]
+	"include": ["./apps/**/*"]
 }

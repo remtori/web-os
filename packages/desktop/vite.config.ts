@@ -4,6 +4,7 @@ import { ViteDevServer, defineConfig } from 'vite';
 import basicSsl from '@vitejs/plugin-basic-ssl';
 import solidPlugin from 'vite-plugin-solid';
 import tsconfigPaths from 'vite-tsconfig-paths';
+import dts from 'vite-plugin-dts';
 
 export default defineConfig(({ mode }) => ({
 	plugins: [

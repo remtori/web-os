@@ -1,13 +1,12 @@
 {
 	"extends": "../../tsconfig.json",
 	"compilerOptions": {
+		"baseUrl": ".",
 		"paths": {
 			"@core/*": ["./src/core/*"],
-			"@kernel/*": ["./src/kernel/*"]
+			"@kernel/*": ["./src/kernel/*"],
+			"@trpc-adapter/*": ["../trpc-adapter/*"]
 		}
 	},
-	"include": [
-		"../userspace/syscall.d.ts",
-		"./src/**/*",
-	]
+	"include": ["./src/**/*"]
 }

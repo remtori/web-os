@@ -1,11 +1,10 @@
 {
 	"extends": "../../tsconfig.json",
 	"compilerOptions": {
+		"baseUrl": ".",
 		"paths": {
+			"@trpc-adapter/*": [ "../trpc-adapter/*" ],
 		}
 	},
-	"include": [
-		"../userspace/syscall.d.ts",
-		"./src/**/*",
-	]
+	"include": ["./src/**/*"],
 }

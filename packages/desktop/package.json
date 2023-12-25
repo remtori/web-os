@@ -1,8 +1,10 @@
 {
+	"name": "desktop",
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
 		"build": "vite build",
+		"build:syscall": "vite build --config vite.config.syscall.ts",
 		"preview": "vite preview"
 	}
 }

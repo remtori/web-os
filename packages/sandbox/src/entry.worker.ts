@@ -1,11 +1,11 @@
-import { syscall } from './syscall';
+import { __init } from './syscall';
 import * as theLib from './index';
 
 const onMessage = (event: MessageEvent) => {
 	if (event.data.type === 'init') {
 		const port = event.ports[0];
 		const code = event.data.code;
-		syscall.__init(port);
+		__init(port);
 
 		const fn = new Function('__exports__AppSandbox', code);
 		try {
