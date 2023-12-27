@@ -12,6 +12,7 @@
     "build:desktop": "npm run build --prefix ./packages/desktop",
     "build:sandbox": "npm run build --prefix ./packages/sandbox",
     "build:userspace": "npm run build --prefix ./packages/userspace",
+	"preview": "concurrently \"npm:preview:*\"",
     "preview:desktop": "npm run preview --prefix ./packages/desktop",
     "preview:sandbox": "npm run preview --prefix ./packages/sandbox"
   },
@@ -30,6 +31,7 @@
     "@vitejs/plugin-basic-ssl": "^1.0.2",
     "autoprefixer": "^10.4.16",
     "concurrently": "^8.2.2",
+    "mime-types": "^2.1.35",
     "postcss": "^8.4.32",
     "sass": "^1.58.0",
     "tailwindcss": "^3.3.5",

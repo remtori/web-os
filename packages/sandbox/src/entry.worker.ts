@@ -1,15 +1,20 @@
 import { __init } from './syscall';
 import * as theLib from './index';
 
-const onMessage = (event: MessageEvent) => {
+(self as any).__exports__AppSandbox = theLib;
+
+const onMessage = async (event: MessageEvent) => {
 	if (event.data.type === 'init') {
 		const port = event.ports[0];
 		const code = event.data.code;
 		__init(port);
 
-		const fn = new Function('__exports__AppSandbox', code);
 		try {
-			fn(theLib);
+			if (__WORKER_MODE__ === 'module') {
+				await import(/* @vite-ignore */ code);
+			} else {
+				importScripts(code);
+			}
 		} catch (anyError) {
 			console.log('[Sandbox] error', anyError);
 		}

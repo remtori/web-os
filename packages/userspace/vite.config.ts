@@ -13,6 +13,7 @@ export default defineConfig(({ mode }) => ({
 		}),
 	],
 	build: {
+		emptyOutDir: false,
 		sourcemap: mode === 'production' ? true : 'inline',
 		lib: {
 			name: '__exports',
@@ -26,7 +27,7 @@ export default defineConfig(({ mode }) => ({
 		},
 		outDir:
 			mode === 'production'
-				? resolve(__dirname, '../../dist/desktop/apps')
+				? resolve(__dirname, '../../dist/sandbox/apps')
 				: resolve(__dirname, '../../dist/userspace/apps'),
 		rollupOptions: {
 			external: 'app-sandbox',
