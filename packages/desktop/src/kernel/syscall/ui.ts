@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { router, publicProcedure } from './router';
 import { $nodeId, $nodeType, ElementType } from '@kernel/schema';
+import { fromEvent, throwError } from 'rxjs';
 
 const nodeRouter = router({
 	create: publicProcedure
@@ -84,9 +85,40 @@ const nodeRouter = router({
 		)
 		.mutation(({ ctx, input }): void => {
 			const node = ctx.process.getNode(input.node);
-			if (node) {
-				(node as HTMLElement).setAttribute(input.name, input.value);
+			if (node instanceof HTMLElement) {
+				if (input.name === 'style') {
+					Object.assign(node.style, input.value);
+				} else if (input.name === 'class') {
+					node.className = input.value;
+				} else {
+					node.setAttribute(input.name, input.value);
+				}
 			}
+		}),
+	onEvent: publicProcedure
+		.input(
+			z.object({
+				node: $nodeId,
+				eventName: z.string().min(1),
+			})
+		)
+		.subscription(({ ctx, input }) => {
+			const node = ctx.process.getNode(input.node);
+			if (node instanceof HTMLElement) {
+				const $event = fromEvent(node, input.eventName, (event: any) => {
+					const podEvent: any = {};
+					for (const key in event) {
+						if (typeof event[key] !== 'function' && typeof event[key] !== 'object') {
+							podEvent[key] = event[key];
+						}
+					}
+
+					return podEvent;
+				});
+				return $event;
+			}
+
+			return throwError(() => new Error('Node is not an HTMLElement'));
 		}),
 });
 

@@ -1,6 +1,7 @@
 // Super minimal and optimized virtual DOM implementation
 // Performance is preferred over readability
 
+import { Unsubscribable } from 'rxjs';
 import { syscall } from './syscall';
 
 export enum NodeType {
@@ -88,6 +89,11 @@ export function removeNode(parent: DomElementNode, node: DomNode, removeFromPare
 		}
 
 		node.children.length = 0;
+		for (const [name, listener] of node.properties) {
+			if (name.startsWith('on')) {
+				(listener as DomNodeEventListener).unsubscribable.unsubscribe();
+			}
+		}
 		node.properties.clear();
 	}
 
@@ -128,7 +134,39 @@ export function replaceText(textNode: DomTextNode, value: string): void {
 	});
 }
 
+type DomNodeEventListener = {
+	unsubscribable: Unsubscribable;
+};
+
 export function setProperty(node: DomElementNode, name: string, value: any): void {
+	if (name.startsWith('on')) {
+		const listener = node.properties.get(name) as DomNodeEventListener | undefined;
+		listener?.unsubscribable.unsubscribe();
+
+		if (typeof value !== 'function') {
+			node.properties.delete(name);
+			return;
+		}
+
+		const unsubscribable = syscall.ui.node.onEvent.subscribe(
+			{
+				node: node.nodeId,
+				eventName: name.slice(2),
+			},
+			{
+				onData(data) {
+					value(data);
+				},
+				onError(err) {
+					console.error(err);
+				},
+			}
+		);
+
+		node.properties.set(name, { unsubscribable } as DomNodeEventListener);
+		return;
+	}
+
 	node.properties.set(name, value);
 	syscall.ui.node.setProperty.mutate({
 		node: node.nodeId,

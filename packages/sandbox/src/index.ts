@@ -1,3 +1,4 @@
+import type { JSXElement } from 'solid-js';
 import { createRenderer } from 'solid-js/universal';
 import * as vdom from './vdom';
 
@@ -57,6 +58,6 @@ export const {
 	use,
 } = renderer;
 
-export const render = (code: () => vdom.DomNode) => {
-	return renderer.render(code, vdom.dummyRoot);
+export const render = (code: () => JSXElement) => {
+	return renderer.render(code as any, vdom.dummyRoot);
 };

@@ -196,7 +196,7 @@ const WindowWidget: Component<{ children: JSX.Element }> = (props) => {
 					</button>
 				</div>
 			</div>
-			<div class='rounded-b-md w-full bg-white opacity-80 flex flex-grow flex-col'>{content()}</div>
+			<div class='rounded-b-md w-full bg-white opacity-90 flex flex-grow flex-col'>{content()}</div>
 
 			<div
 				use:resizable={{ setX, setY, setWidth, setHeight, direction: 'e' }}
