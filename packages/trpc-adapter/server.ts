@@ -181,8 +181,11 @@ export function createServer<TRouter extends AnyRouter, TServerTransport extends
 	transport.on('message', async (msgJSON: any) => {
 		try {
 			const msgs: unknown[] = Array.isArray(msgJSON) ? msgJSON : [msgJSON];
-			const promises = msgs.map((raw) => parseTRPCMessage(raw, transformer)).map(handleRequest);
-			await Promise.all(promises);
+
+			for (let i = 0; i < msgs.length; i++) {
+				const parsedMsg = parseTRPCMessage(msgs[i], transformer);
+				await handleRequest(parsedMsg);
+			}
 		} catch (cause) {
 			const error = new TRPCError({
 				code: 'PARSE_ERROR',

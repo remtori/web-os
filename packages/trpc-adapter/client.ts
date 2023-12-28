@@ -102,7 +102,7 @@ function createClient<TClientTransport extends ClientTransport>(client: TClientT
 			outgoing = outgoing.filter((msg) => msg.id !== id);
 
 			callbacks?.complete?.();
-			if (client.isConnected() && op.type === 'subscription') {
+			if (!client.isConnected() && op.type === 'subscription') {
 				outgoing.push({
 					id,
 					method: 'subscription.stop',
