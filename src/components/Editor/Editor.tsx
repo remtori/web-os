@@ -11,6 +11,7 @@ import { toggleMark } from 'prosemirror-commands';
 import { menuBar, MenuElement, undoItem, redoItem } from 'prosemirror-menu';
 import 'prosemirror-view/style/prosemirror.css';
 import { PhotoIcon } from '../icons/photo';
+import './styles.css';
 
 const mySchema = new Schema({
 	nodes: addListNodes(schema.spec.nodes, 'paragraph block*', 'block'),

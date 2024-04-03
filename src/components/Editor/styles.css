@@ -1,0 +1,4 @@
+
+.ProseMirror-focused {
+	@apply outline-none caret-green-600;
+}
