@@ -10,6 +10,7 @@ import { history } from 'prosemirror-history';
 import { toggleMark } from 'prosemirror-commands';
 import { menuBar, MenuElement, undoItem, redoItem } from 'prosemirror-menu';
 import 'prosemirror-view/style/prosemirror.css';
+import { PhotoIcon } from '../icons/photo';
 
 const mySchema = new Schema({
 	nodes: addListNodes(schema.spec.nodes, 'paragraph block*', 'block'),
@@ -42,16 +43,28 @@ export const Editor: Component = (props) => {
 	});
 
 	return (
-		<div class="flex flex-col">
-			<div class="flex flex-row">
+		<div class="flex flex-col p-2">
+			<div class="flex flex-row items-center text-sm">
+				<PhotoIcon />
+				<span class="w-1"></span>
 				<a>Add Cover</a>
 			</div>
-			<input
-				type="text"
-				class="placeholder-gray-400"
-				placeholder="Please enter title (required)"
-			/>
-			<div class="flex flex-row" ref={editorRef}></div>
+			<div class="group my-3 flex flex-col text-xl">
+				<input
+					type="text"
+					class="box-border w-full placeholder-gray-400 caret-green-600 placeholder:font-bold focus:outline-none"
+					placeholder="Please enter title (required)"
+				/>
+				<div
+					class="h-3 self-end text-xs text-gray-400"
+					style={{ 'line-height': '12px' }}
+				>
+					<span class="hidden group-focus-within:block">0/200</span>
+				</div>
+				<div class="m-0 w-full border-b border-gray-300"></div>
+				<div class="-mt-[1px] w-0 border-b border-green-600 transition-all duration-300 ease-in-out group-focus-within:w-full"></div>
+			</div>
+			<div class="flex flex-row focus:outline-none" ref={editorRef}></div>
 		</div>
 	);
 };
