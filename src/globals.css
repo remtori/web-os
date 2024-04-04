@@ -5,3 +5,8 @@
 html, body {
     font-family: 'Roboto', sans-serif;
 }
+
+body {
+    position: relative;
+    overflow-x: hidden;
+}

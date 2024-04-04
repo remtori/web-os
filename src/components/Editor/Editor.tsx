@@ -1,4 +1,4 @@
-import { Component } from 'solid-js';
+import { Component, createSignal } from 'solid-js';
 import { onMount, onCleanup } from 'solid-js';
 import { EditorState, Plugin, TextSelection } from 'prosemirror-state';
 import { Decoration, DecorationSet, EditorView } from 'prosemirror-view';
@@ -21,43 +21,51 @@ const mySchema = new Schema({
 });
 
 export const Editor: Component = (props) => {
-	let rootRef: HTMLDivElement | undefined;
 	let editorRef: HTMLDivElement | undefined;
 	let editorView: EditorView;
+	let bottomMenuRef: HTMLDivElement | undefined;
+
+	const [debug, setDebug] = createSignal('asdad');
 
 	onMount(() => {
-		rootRef!.addEventListener(
-			'contextmenu',
-			(e) => e.preventDefault(),
-			true,
+		editorView = new EditorView(
+			{ mount: editorRef! },
+			{
+				state: EditorState.create({
+					schema: mySchema,
+					plugins: [
+						gapCursor(),
+						history(),
+						keymap(baseKeymap),
+						placeholderPlugin('Please enter text'),
+					],
+				}),
+			},
 		);
-
-		editorView = new EditorView(editorRef!, {
-			state: EditorState.create({
-				schema: mySchema,
-				plugins: [
-					gapCursor(),
-					history(),
-					keymap(baseKeymap),
-					placeholderPlugin('Please enter text'),
-				],
-			}),
-		});
 
 		editorView.focus();
 
-		(window as any).view = editorView;
+		if (/iP(hone|od|ad)/.exec(navigator.userAgent)) {
+			const initHeight = window.visualViewport!.height;
+			window.visualViewport!.addEventListener('resize', () => {
+				bottomMenuRef!.style.marginBottom = `${initHeight - window.visualViewport!.height}px`;
+			});
+		}
 	});
 
 	return (
-		<div ref={rootRef} class="flex h-screen w-screen flex-col p-2">
-			<div class="flex flex-row items-center text-sm">
+		<div
+			// oncontextmenu={(e) => e.preventDefault()}
+			class="flex min-h-screen w-screen flex-col"
+		>
+			<div class="fixed left-10 right-10 top-10 p-2">{debug()}</div>
+			<div class="flex flex-row items-center p-2 text-sm">
 				<button class="flex flex-row items-center">
 					<PhotoIcon />
 					Add Cover
 				</button>
 			</div>
-			<div class="group my-3 flex flex-col text-xl">
+			<div class="group my-1 flex flex-col px-2 text-xl">
 				<input
 					type="text"
 					class="box-border w-full placeholder-gray-400 caret-green-600 placeholder:font-bold focus:outline-none"
@@ -70,10 +78,15 @@ export const Editor: Component = (props) => {
 					<span class="hidden group-focus-within:block">0/200</span>
 				</div>
 				<div class="m-0 w-full border-b border-gray-300"></div>
-				<div class="-mt-[1px] w-0 border-b border-green-600 transition-all duration-300 ease-in-out group-focus-within:w-full"></div>
+				<div class="-mt-[1px] w-0 border-b border-green-600 transition-all duration-500 ease-in-out group-focus-within:w-full"></div>
 			</div>
-			<div class="group flex w-full grow flex-row" ref={editorRef}>
-				<div class="fixed bottom-0 left-0 right-0 flex w-full flex-col group-focus-within:flex">
+			<div class="group flex w-full grow flex-col pl-2 pr-2 md:pr-4">
+				<div ref={editorRef}></div>
+				<div class="group-focus-within:pt-10"></div>
+				<div
+					ref={bottomMenuRef}
+					class="fixed bottom-0 left-0 right-0 flex w-full flex-col"
+				>
 					<div class="mb-4 mr-2 flex w-min flex-row self-end text-white ">
 						<button class="rounded-l-lg border-r border-gray-400 bg-slate-700 p-1 active:bg-slate-900">
 							<ArrowUTurnLeftIcon />
@@ -82,7 +95,7 @@ export const Editor: Component = (props) => {
 							<ArrowUTurnRightIcon />
 						</button>
 					</div>
-					<div class="w-100 h-8 bg-gray-200"></div>
+					<div class="w-100 h-8 bg-gray-200">{debug()}</div>
 				</div>
 			</div>
 		</div>
