@@ -6,9 +6,10 @@ default:
 stages:
   - deploy
 
-deploy:      
-  stage: deploy  
+deploy:
+  stage: deploy
   environment: production
-  script:    
+  script:
     - npm install
     - npm run build
+    - aws s3 sync ./dist s3://portal-cdn-bco.service.zingplay.com/public/editor --delete
