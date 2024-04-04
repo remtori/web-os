@@ -1,5 +1,4 @@
-import { Component, createSignal } from 'solid-js';
-import { onMount, onCleanup } from 'solid-js';
+import { Component, createSignal, onMount, onCleanup } from 'solid-js';
 import { EditorState, Plugin, TextSelection } from 'prosemirror-state';
 import { Decoration, DecorationSet, EditorView } from 'prosemirror-view';
 import { Schema, DOMParser } from 'prosemirror-model';
@@ -24,8 +23,6 @@ export const Editor: Component = (props) => {
 	let editorRef: HTMLDivElement | undefined;
 	let editorView: EditorView;
 	let bottomMenuRef: HTMLDivElement | undefined;
-
-	const [debug, setDebug] = createSignal('asdad');
 
 	onMount(() => {
 		editorView = new EditorView(
@@ -58,7 +55,6 @@ export const Editor: Component = (props) => {
 			// oncontextmenu={(e) => e.preventDefault()}
 			class="flex min-h-screen w-screen flex-col"
 		>
-			<div class="fixed left-10 right-10 top-10 p-2">{debug()}</div>
 			<div class="flex flex-row items-center p-2 text-sm">
 				<button class="flex flex-row items-center">
 					<PhotoIcon />
@@ -95,7 +91,7 @@ export const Editor: Component = (props) => {
 							<ArrowUTurnRightIcon />
 						</button>
 					</div>
-					<div class="w-100 h-8 bg-gray-200">{debug()}</div>
+					<div class="w-100 h-8 bg-gray-200"></div>
 				</div>
 			</div>
 		</div>
