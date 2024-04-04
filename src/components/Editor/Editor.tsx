@@ -1,4 +1,14 @@
-import { Component, createSignal, onMount, onCleanup } from 'solid-js';
+import {
+	Component,
+	createSignal,
+	onMount,
+	onCleanup,
+	Show,
+	Switch,
+	Match,
+} from 'solid-js';
+import Fa from 'solid-fa';
+import { faRegularPro } from '../icons/fontawesome-regular';
 import { EditorState, Plugin, TextSelection } from 'prosemirror-state';
 import { Decoration, DecorationSet, EditorView } from 'prosemirror-view';
 import { Schema, DOMParser } from 'prosemirror-model';
@@ -8,11 +18,12 @@ import { gapCursor } from 'prosemirror-gapcursor';
 import { history } from 'prosemirror-history';
 import { toggleMark, baseKeymap } from 'prosemirror-commands';
 import { keymap } from 'prosemirror-keymap';
-import { PhotoIcon } from '../icons/photo';
 import 'prosemirror-view/style/prosemirror.css';
 import './styles.css';
 import { ArrowUTurnLeftIcon } from '../icons/arrow-uturn-left';
 import { ArrowUTurnRightIcon } from '../icons/arrow-uturn-right';
+import { PlusCircle } from '../icons/plus-circle';
+import { TextStyleMenu } from './TextStyleMenu';
 
 const mySchema = new Schema({
 	nodes: addListNodes(schema.spec.nodes, 'paragraph block*', 'block'),
@@ -50,17 +61,13 @@ export const Editor: Component = (props) => {
 		}
 	});
 
+	const [openTextStyleMenu, setOpenTextStyleMenu] = createSignal(true);
+
 	return (
 		<div
 			// oncontextmenu={(e) => e.preventDefault()}
 			class="flex min-h-screen w-screen flex-col"
 		>
-			<div class="flex flex-row items-center p-2 text-sm">
-				<button class="flex flex-row items-center">
-					<PhotoIcon />
-					Add Cover
-				</button>
-			</div>
 			<div class="group my-1 flex flex-col px-2 text-xl">
 				<input
 					type="text"
@@ -83,7 +90,7 @@ export const Editor: Component = (props) => {
 					ref={bottomMenuRef}
 					class="fixed bottom-0 left-0 right-0 flex w-full flex-col"
 				>
-					<div class="mb-4 mr-2 flex w-min flex-row self-end text-white ">
+					<div class="mb-4 mr-2 flex w-min flex-row self-end rounded-lg text-white shadow-sm shadow-gray-300">
 						<button class="rounded-l-lg border-r border-gray-400 bg-slate-700 p-1 active:bg-slate-900">
 							<ArrowUTurnLeftIcon />
 						</button>
@@ -91,7 +98,45 @@ export const Editor: Component = (props) => {
 							<ArrowUTurnRightIcon />
 						</button>
 					</div>
-					<div class="w-100 h-8 bg-gray-200"></div>
+					<div class="w-100 shadow-t-sm flex flex-col shadow-gray-300">
+						<Switch>
+							<Match when={!openTextStyleMenu()}>
+								<div class="flex h-8 flex-row items-center px-2">
+									<button
+										onclick={() =>
+											setOpenTextStyleMenu(true)
+										}
+										class="mx-2"
+									>
+										<Fa
+											icon={{
+												icon: faRegularPro.font as any,
+												prefix: 'far',
+												iconName: 'font',
+											}}
+										/>
+									</button>
+									<button class="mx-2">
+										<PlusCircle />
+									</button>
+									<button class="mx-2">
+										<PlusCircle />
+									</button>
+									<button class="mx-2">
+										<PlusCircle />
+									</button>
+									<button class="mx-2">
+										<PlusCircle />
+									</button>
+								</div>
+							</Match>
+							<Match when={openTextStyleMenu()}>
+								<TextStyleMenu
+									back={() => setOpenTextStyleMenu(false)}
+								/>
+							</Match>
+						</Switch>
+					</div>
 				</div>
 			</div>
 		</div>
