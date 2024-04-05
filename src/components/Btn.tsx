@@ -1,4 +1,4 @@
-import { JSX, JSXElement, ParentComponent } from 'solid-js';
+import { JSX, ParentComponent } from 'solid-js';
 
 export const Btn: ParentComponent<
 	{

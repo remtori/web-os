@@ -1,5 +1,5 @@
 import { render } from 'solid-js/web';
-import { Editor } from './components/Editor';
+import { App } from './components/App';
 import './globals.css';
 
-render(() => <Editor />, document.getElementById('root')!);
+render(() => <App />, document.getElementById('root')!);
