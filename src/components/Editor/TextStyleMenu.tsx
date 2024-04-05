@@ -1,8 +1,26 @@
 import Fa from 'solid-fa';
 import { Component, createSignal } from 'solid-js';
-import { faRegularPro } from '../icons/fontawesome-regular';
-import { faCircleDown } from '@fortawesome/free-solid-svg-icons';
-import { faLightPro } from '../icons/fontawesome-light';
+import {
+	faFillDrip,
+	faPen,
+	faTextSize,
+	faCircleDown,
+	faListTree,
+	faAlignJustify,
+	faBold,
+	faItalic,
+	faStrikethrough,
+	faUnderline,
+	faList,
+	faListOl,
+	faIndent,
+	faOutdent,
+	faAlignLeft,
+	faAlignCenter,
+	faAlignRight,
+} from '@deps/fontawesome/fa-regular';
+import { faH1, faH2, faH3 } from '@deps/fontawesome/fa-light';
+import { Btn } from '../Btn';
 
 export type BackFn = () => void;
 
@@ -12,68 +30,38 @@ export const TextStyleMenu: Component<{ back: BackFn }> = (props) => {
 
 	return (
 		<>
-			<div class="flex h-8 flex-row items-center justify-between px-2">
+			<div class="flex flex-row items-center justify-between px-2">
 				<div class="flex flex-row items-center">
-					<button
-						onclick={() => setOpenedMenu(() => TextSizeOptions)}
-						class="mx-2"
+					<Btn
+						onClick={() => setOpenedMenu(() => TextSizeOptions)}
+						class="px-2 py-2"
 					>
-						<Fa
-							icon={{
-								icon: faRegularPro['text-size'] as any,
-								prefix: 'far',
-								iconName: 'text-size',
-							}}
-						/>
-					</button>
-					<button class="mx-2">
-						<Fa
-							icon={{
-								icon: faRegularPro['pen'] as any,
-								prefix: 'far',
-								iconName: 'pen',
-							}}
-						/>
-					</button>
-					<button class="mx-2">
-						<Fa
-							icon={{
-								icon: faRegularPro['fill-drip'] as any,
-								prefix: 'far',
-								iconName: 'fill-drip',
-							}}
-						/>
-					</button>
-					<button
-						onclick={() => setOpenedMenu(() => ListOptions)}
-						class="mx-2"
+						<Fa icon={faTextSize} />
+					</Btn>
+					<Btn class="px-2 py-2">
+						<Fa icon={faPen} />
+					</Btn>
+					<Btn class="px-2 py-2">
+						<Fa icon={faFillDrip} />
+					</Btn>
+					<Btn
+						onClick={() => setOpenedMenu(() => ListOptions)}
+						class="px-2 py-2"
 					>
-						<Fa
-							icon={{
-								icon: faRegularPro['list-tree'] as any,
-								prefix: 'far',
-								iconName: 'list-tree',
-							}}
-						/>
-					</button>
-					<button
-						onclick={() => setOpenedMenu(() => AlignOptions)}
-						class="mx-2"
+						<Fa icon={faListTree} />
+					</Btn>
+					<Btn
+						onClick={() => setOpenedMenu(() => AlignOptions)}
+						class="px-2 py-2"
 					>
-						<Fa
-							icon={{
-								icon: faRegularPro['align-justify'] as any,
-								prefix: 'far',
-								iconName: 'align-justify',
-							}}
-						/>
-					</button>
+						<Fa icon={faAlignJustify} />
+					</Btn>
 				</div>
 				<div class="flex flex-row items-center">
 					<div class="mx-2 h-4 border-r border-r-gray-300" />
-					<button class="" onclick={props.back}>
+					<Btn class="px-2 py-2" onClick={props.back}>
 						<Fa icon={faCircleDown} />
-					</button>
+					</Btn>
 				</div>
 			</div>
 			{CurrentMenuOptions}
@@ -83,149 +71,65 @@ export const TextStyleMenu: Component<{ back: BackFn }> = (props) => {
 
 const TextSizeOptions = () => {
 	return (
-		<div class="flex h-8 flex-row items-center px-6">
-			<button class="mx-2">
-				<Fa
-					icon={{
-						icon: faLightPro.h1 as any,
-						prefix: 'fal',
-						iconName: 'h1',
-					}}
-				/>
-			</button>
-			<button class="mx-2">
-				<Fa
-					icon={{
-						icon: faLightPro.h2 as any,
-						prefix: 'fal',
-						iconName: 'h2',
-					}}
-				/>
-			</button>
-			<button class="mx-2">
-				<Fa
-					icon={{
-						icon: faLightPro.h3 as any,
-						prefix: 'fal',
-						iconName: 'h3',
-					}}
-				/>
-			</button>
+		<div class="flex flex-row items-center px-6">
+			<Btn class="px-2 py-2">
+				<Fa icon={faH1} />
+			</Btn>
+			<Btn class="px-2 py-2">
+				<Fa icon={faH2} />
+			</Btn>
+			<Btn class="px-2 py-2">
+				<Fa icon={faH3} />
+			</Btn>
 			<div class="mx-2 h-4 border-r border-r-gray-300" />
-			<button class="mx-2">
-				<Fa
-					icon={{
-						icon: faRegularPro.bold as any,
-						prefix: 'far',
-						iconName: 'bold',
-					}}
-				/>
-			</button>
-			<button class="mx-2">
-				<Fa
-					icon={{
-						icon: faRegularPro.italic as any,
-						prefix: 'far',
-						iconName: 'italic',
-					}}
-				/>
-			</button>
-			<button class="mx-2">
-				<Fa
-					icon={{
-						icon: faRegularPro.strikethrough as any,
-						prefix: 'far',
-						iconName: 'strikethrough',
-					}}
-				/>
-			</button>
-			<button class="mx-2">
-				<Fa
-					icon={{
-						icon: faRegularPro.underline as any,
-						prefix: 'far',
-						iconName: 'underline',
-					}}
-				/>
-			</button>
+			<Btn class="px-2 py-2">
+				<Fa icon={faBold} />
+			</Btn>
+			<Btn class="px-2 py-2">
+				<Fa icon={faItalic} />
+			</Btn>
+			<Btn class="px-2 py-2">
+				<Fa icon={faStrikethrough} />
+			</Btn>
+			<Btn class="px-2 py-2">
+				<Fa icon={faUnderline} />
+			</Btn>
 		</div>
 	);
 };
 
 const ListOptions: Component = () => {
 	return (
-		<div class="flex h-8 flex-row items-center px-6">
-			<button class="mx-2">
-				<Fa
-					icon={{
-						icon: faRegularPro.list as any,
-						prefix: 'far',
-						iconName: 'list',
-					}}
-				/>
-			</button>
-			<button class="mx-2">
-				<Fa
-					icon={{
-						icon: faRegularPro['list-ol'] as any,
-						prefix: 'far',
-						iconName: 'list-ol',
-					}}
-				/>
-			</button>
-			<div class="mx-2 h-4 border-r border-r-gray-300" />
-			<button class="mx-2">
-				<Fa
-					icon={{
-						icon: faRegularPro.indent as any,
-						prefix: 'far',
-						iconName: 'indent',
-					}}
-				/>
-			</button>
-			<button class="mx-2">
-				<Fa
-					icon={{
-						icon: faRegularPro.outdent as any,
-						prefix: 'far',
-						iconName: 'outdent',
-					}}
-				/>
-			</button>
+		<div class="flex flex-row items-center px-6">
+			<Btn class="px-2 py-2">
+				<Fa icon={faList} />
+			</Btn>
+			<Btn class="px-2 py-2">
+				<Fa icon={faListOl} />
+			</Btn>
+			<div class="h-4 border-r border-r-gray-300 px-2 py-2" />
+			<Btn class="px-2 py-2">
+				<Fa icon={faIndent} />
+			</Btn>
+			<Btn class="px-2 py-2">
+				<Fa icon={faOutdent} />
+			</Btn>
 		</div>
 	);
 };
 
 const AlignOptions: Component = () => {
 	return (
-		<div class="flex h-8 flex-row items-center px-6">
-			<button class="mx-2">
-				<Fa
-					icon={{
-						icon: faRegularPro['align-left'] as any,
-						prefix: 'far',
-						iconName: 'align-left',
-					}}
-				/>
-			</button>
-			<button class="mx-2">
-				<Fa
-					icon={{
-						icon: faRegularPro['align-center'] as any,
-						prefix: 'far',
-						iconName: 'align-center',
-					}}
-				/>
-			</button>
-			<button class="mx-2">
-				<Fa
-					icon={{
-						icon: faRegularPro['align-right'] as any,
-						prefix: 'far',
-						iconName: 'align-right',
-					}}
-				/>
-			</button>
+		<div class="flex flex-row items-center px-6">
+			<Btn class="px-2 py-2">
+				<Fa icon={faAlignLeft} />
+			</Btn>
+			<Btn class="px-2 py-2">
+				<Fa icon={faAlignCenter} />
+			</Btn>
+			<Btn class="px-2 py-2">
+				<Fa icon={faAlignRight} />
+			</Btn>
 		</div>
 	);
 };

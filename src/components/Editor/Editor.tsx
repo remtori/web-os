@@ -8,7 +8,7 @@ import {
 	Match,
 } from 'solid-js';
 import Fa from 'solid-fa';
-import { faRegularPro } from '../icons/fontawesome-regular';
+import { faFont } from '@deps/fontawesome/fa-regular';
 import { EditorState, Plugin, TextSelection } from 'prosemirror-state';
 import { Decoration, DecorationSet, EditorView } from 'prosemirror-view';
 import { Schema, DOMParser } from 'prosemirror-model';
@@ -18,11 +18,13 @@ import { gapCursor } from 'prosemirror-gapcursor';
 import { history } from 'prosemirror-history';
 import { toggleMark, baseKeymap } from 'prosemirror-commands';
 import { keymap } from 'prosemirror-keymap';
-import 'prosemirror-view/style/prosemirror.css';
-import './styles.css';
 import { ArrowUTurnLeftIcon } from '../icons/arrow-uturn-left';
 import { ArrowUTurnRightIcon } from '../icons/arrow-uturn-right';
 import { PlusCircle } from '../icons/plus-circle';
+// import { TextStyleMenu } from './TextStyleMenu';
+
+import 'prosemirror-view/style/prosemirror.css';
+import './styles.css';
 import { TextStyleMenu } from './TextStyleMenu';
 
 const mySchema = new Schema({
@@ -61,8 +63,9 @@ export const Editor: Component = (props) => {
 		}
 	});
 
-	const [openTextStyleMenu, setOpenTextStyleMenu] = createSignal(true);
+	const [openTextStyleMenu, setOpenTextStyleMenu] = createSignal(false);
 
+	console.log(faFont);
 	return (
 		<div
 			// oncontextmenu={(e) => e.preventDefault()}
@@ -108,13 +111,7 @@ export const Editor: Component = (props) => {
 										}
 										class="mx-2"
 									>
-										<Fa
-											icon={{
-												icon: faRegularPro.font as any,
-												prefix: 'far',
-												iconName: 'font',
-											}}
-										/>
+										<Fa icon={faFont} />
 									</button>
 									<button class="mx-2">
 										<PlusCircle />
