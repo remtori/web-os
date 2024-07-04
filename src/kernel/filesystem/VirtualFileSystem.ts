@@ -1,13 +1,12 @@
-import { AsyncResult, ErrorCode, err, ok } from '@core/result';
-import { $FileSystem } from './FileSystem';
-import { $File, $FileDescriptor, $SimpleFile } from './File';
-import { $RamFS } from './RamFS';
-import { $path } from '@core/path';
+import { AsyncResult, ErrorCode, err } from '@kernel/core';
+import { $RamFS } from './$RamFS';
+import { $WebStorageFS } from './$WebStorageFS';
 import { $Custody } from './Custody';
-import { $WebStorageFS } from './WebStorageFS';
+import { $File } from './File';
+import { $FileSystem } from './FileSystem';
 
 class $VirtualFileSystem {
-	private _root: $Custody | undefined;
+	private _root!: $Custody;
 	private _initialized: boolean;
 	private _readyPromise: Promise<void>;
 
@@ -25,11 +24,15 @@ class $VirtualFileSystem {
 
 		this._root = new $Custody(undefined, this._rootFs.root());
 
-		let ret = await this.mount('/tmp', new $RamFS());
+		const ret = await this.mount('/tmp', new $RamFS());
 		if (!ret.ok) {
 			console.error(`Failed to mount /tmp: ${ret.error}`);
 		}
 		this._initialized = true;
+	}
+
+	ready(): Promise<void> {
+		return this._readyPromise;
 	}
 
 	async mount(mountPoint: string, fs: $FileSystem): AsyncResult<void> {
@@ -46,7 +49,7 @@ class $VirtualFileSystem {
 
 	async resolvePath(
 		base: $Custody,
-		path: string
+		path: string,
 	): AsyncResult<{
 		parent: $Custody | undefined;
 		custody: $Custody | undefined;

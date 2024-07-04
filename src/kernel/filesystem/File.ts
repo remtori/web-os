@@ -1,4 +1,4 @@
-import { AsyncResult, ErrorCode, Result, err, ok } from '@core/result';
+import { ErrorCode, Result, SyncOrAsyncResult, err, ok } from '@kernel/core';
 import { $FileSystem } from './FileSystem';
 
 export type $FileMetadata = {
@@ -6,7 +6,6 @@ export type $FileMetadata = {
 	isSymlink: boolean;
 	isReadable: boolean;
 	isWritable: boolean;
-	isExecutable: boolean;
 	size: number;
 	accessTime: number;
 	creationTime: number;
@@ -35,54 +34,61 @@ export interface $File {
 
 	fs(): $FileSystem;
 
-	dirEntries(): AsyncResult<string[]>;
-	getChild(name: string): AsyncResult<$File>;
-	createChild(name: string, options?: $CreateFileOptions): AsyncResult<$File>;
-	removeChild(name: string, options?: $RemoveFileOptions): AsyncResult<void>;
+	dirEntries(): SyncOrAsyncResult<string[]>;
+	getChild(name: string): SyncOrAsyncResult<$File>;
+	createChild(
+		name: string,
+		options?: $CreateFileOptions,
+	): SyncOrAsyncResult<$File>;
+	removeChild(
+		name: string,
+		options?: $RemoveFileOptions,
+	): SyncOrAsyncResult<void>;
 
 	isReadable(): boolean;
-	setReadable(readable: boolean): AsyncResult<void>;
+	setReadable(readable: boolean): SyncOrAsyncResult<void>;
 
 	isWritable(): boolean;
-	setWritable(readable: boolean): AsyncResult<void>;
+	setWritable(readable: boolean): SyncOrAsyncResult<void>;
 
-	isExecutable(): boolean;
-	setExecutable(readable: boolean): AsyncResult<void>;
-
-	stat(): Result<$FileMetadata>;
-	open(): AsyncResult<$FileDescriptor>;
+	stat(): SyncOrAsyncResult<$FileMetadata>;
+	open(): SyncOrAsyncResult<$FileDescriptor>;
 }
 
 export abstract class $SimpleFile implements $File {
 	protected _metadata: $FileMetadata;
 
 	constructor(metadata?: Partial<$FileMetadata>) {
-		const now = Date.now();
 		this._metadata = Object.assign(
 			{
 				isDirectory: false,
 				isSymlink: false,
 				isReadable: false,
 				isWritable: false,
-				isExecutable: false,
 				size: 0,
-				accessTime: now,
-				creationTime: now,
-				modificationTime: now,
+				accessTime: 0,
+				creationTime: 0,
+				modificationTime: 0,
 			},
-			metadata
+			metadata,
 		);
 	}
 
 	abstract fs(): $FileSystem;
 	abstract name(): string;
-	abstract dirEntries(): AsyncResult<string[]>;
-	abstract open(): AsyncResult<$FileDescriptor>;
-	abstract getChild(name: string): AsyncResult<$File>;
-	abstract createChild(name: string, options?: $CreateFileOptions): AsyncResult<$File>;
-	abstract removeChild(name: string, options?: $RemoveFileOptions): AsyncResult<void>;
+	abstract dirEntries(): SyncOrAsyncResult<string[]>;
+	abstract open(): SyncOrAsyncResult<$FileDescriptor>;
+	abstract getChild(name: string): SyncOrAsyncResult<$File>;
+	abstract createChild(
+		name: string,
+		options?: $CreateFileOptions,
+	): SyncOrAsyncResult<$File>;
+	abstract removeChild(
+		name: string,
+		options?: $RemoveFileOptions,
+	): SyncOrAsyncResult<void>;
 
-	stat(): Result<$FileMetadata> {
+	stat(): SyncOrAsyncResult<$FileMetadata> {
 		return ok(this._metadata);
 	}
 
@@ -102,39 +108,35 @@ export abstract class $SimpleFile implements $File {
 		return this._metadata.isWritable;
 	}
 
-	isExecutable(): boolean {
-		return this._metadata.isExecutable;
-	}
-
-	async setReadable(readable: boolean): AsyncResult<void> {
+	setReadable(readable: boolean) {
 		this._metadata.isReadable = readable;
 		return ok();
 	}
 
-	async setWritable(writable: boolean): AsyncResult<void> {
+	setWritable(writable: boolean) {
 		this._metadata.isWritable = writable;
-		return ok();
-	}
-
-	async setExecutable(executable: boolean): AsyncResult<void> {
-		this._metadata.isExecutable = executable;
 		return ok();
 	}
 }
 
 export interface $FileDescriptor {
 	file(): $File | undefined;
-	close(): AsyncResult<void>;
+	close(): SyncOrAsyncResult<void>;
 
-	seek(offset: number, whence: SeekWhence): AsyncResult<number>;
+	seek(offset: number, whence: SeekWhence): SyncOrAsyncResult<number>;
 	offset(): number;
 
-	read(buffer: ArrayBuffer): AsyncResult<number>;
-	write(buffer: ArrayBuffer): AsyncResult<number>;
+	read(buffer: ArrayBuffer): SyncOrAsyncResult<number>;
+	write(buffer: ArrayBuffer): SyncOrAsyncResult<number>;
 }
 
 export const $FileHelper = {
-	seek(offset: number, whence: SeekWhence, currentOffset: number, size: number): Result<number> {
+	seek(
+		offset: number,
+		whence: SeekWhence,
+		currentOffset: number,
+		size: number,
+	): Result<number> {
 		switch (whence) {
 			case SeekWhence.Set:
 				if (offset < 0 || offset > size) {
@@ -143,7 +145,10 @@ export const $FileHelper = {
 
 				return ok(offset);
 			case SeekWhence.Current:
-				if (currentOffset + offset < 0 || currentOffset + offset > size) {
+				if (
+					currentOffset + offset < 0 ||
+					currentOffset + offset > size
+				) {
 					return err(ErrorCode.InvalidOffset);
 				}
 

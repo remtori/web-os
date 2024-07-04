@@ -1,6 +1,9 @@
-export type Result<T, E = ErrorCode> = { ok: true; value: T } | { ok: false; error: E };
+export type Result<T, E = ErrorCode> =
+	| { ok: true; value: T }
+	| { ok: false; error: E };
 
 export type AsyncResult<T> = Promise<Result<T>>;
+export type SyncOrAsyncResult<T> = Result<T> | AsyncResult<T>;
 
 export function ok(): Result<void>;
 export function ok<T>(value: T): Result<T>;
@@ -28,7 +31,10 @@ export enum ErrorCode {
 	UnknownError,
 }
 
-export const wrapAsync = async <T>(promise: Promise<T>, mapError: (err: Error) => ErrorCode): AsyncResult<T> => {
+export const wrapAsync = async <T>(
+	promise: Promise<T>,
+	mapError: (err: Error) => ErrorCode,
+): AsyncResult<T> => {
 	try {
 		const value = await promise;
 		return ok(value);

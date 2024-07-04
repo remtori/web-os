@@ -1,15 +1,33 @@
-import { AsyncResult, ErrorCode, err, ok } from '@core/result';
+import { AsyncResult, ErrorCode, Result, err, ok } from '@kernel/core';
 import {
+	$CreateFileOptions,
 	$File,
 	$FileDescriptor,
-	$FileMetadata,
-	$SimpleFile,
 	$FileHelper,
-	SeekWhence,
-	$CreateFileOptions,
+	$FileMetadata,
 	$RemoveFileOptions,
-} from '../File';
-import { $FileSystem } from '../FileSystem';
+	$SimpleFile,
+	SeekWhence,
+} from './File';
+import { $FileSystem } from './FileSystem';
+
+export class $RamFS implements $FileSystem {
+	private _root: $RamFile;
+
+	constructor() {
+		this._root = new $RamFile(this, '<RamFS>', {
+			isDirectory: true,
+		});
+	}
+
+	initialize(): Result<void> {
+		return ok();
+	}
+
+	root(): $File {
+		return this._root;
+	}
+}
 
 class $RamFile extends $SimpleFile implements $FileDescriptor {
 	private _fs: $FileSystem;
@@ -20,7 +38,11 @@ class $RamFile extends $SimpleFile implements $FileDescriptor {
 	private _dataLength: number;
 	private _offset: number;
 
-	constructor(fs: $FileSystem, name: string, metadata?: Partial<$FileMetadata>) {
+	constructor(
+		fs: $FileSystem,
+		name: string,
+		metadata?: Partial<$FileMetadata>,
+	) {
 		super(metadata);
 
 		this._fs = fs;
@@ -40,11 +62,8 @@ class $RamFile extends $SimpleFile implements $FileDescriptor {
 		return this;
 	}
 
-	close(): AsyncResult<void> {
-		throw new Error('Method not implemented.');
-	}
-	offset(): number {
-		throw new Error('Method not implemented.');
+	close(): Result<void> {
+		return err(ErrorCode.NotImplemented);
 	}
 
 	name(): string {
@@ -68,12 +87,22 @@ class $RamFile extends $SimpleFile implements $FileDescriptor {
 		return ok(this);
 	}
 
+	offset(): number {
+		return this._offset;
+	}
+
 	async seek(offset: number, whence: SeekWhence): AsyncResult<number> {
 		if (this.isDirectory()) {
 			return err(ErrorCode.FileIsADirectory);
 		}
 
-		const ret = $FileHelper.seek(offset, whence, this._offset, this._dataLength);
+		const ret = $FileHelper.seek(
+			offset,
+			whence,
+			this._offset,
+			this._dataLength,
+		);
+
 		if (!ret.ok) {
 			return ret;
 		}
@@ -96,7 +125,9 @@ class $RamFile extends $SimpleFile implements $FileDescriptor {
 		}
 
 		const bufferView = new Uint8Array(buffer);
-		bufferView.set(this._data.slice(this._offset, this._offset + buffer.byteLength));
+		bufferView.set(
+			this._data.slice(this._offset, this._offset + buffer.byteLength),
+		);
 		this._offset += buffer.byteLength;
 		return ok(buffer.byteLength);
 	}
@@ -109,7 +140,10 @@ class $RamFile extends $SimpleFile implements $FileDescriptor {
 		const bufferView = new Uint8Array(buffer);
 		if (this._offset + bufferView.byteLength > this._data.byteLength) {
 			const oldCapacity = this._data.byteLength;
-			const newCapacity = Math.max(this._offset + bufferView.byteLength, oldCapacity * 2);
+			const newCapacity = Math.max(
+				this._offset + bufferView.byteLength,
+				oldCapacity * 2,
+			);
 			const newData = new Uint8Array(newCapacity);
 			newData.set(this._data);
 			this._data = newData;
@@ -136,7 +170,10 @@ class $RamFile extends $SimpleFile implements $FileDescriptor {
 		return ok(child);
 	}
 
-	async createChild(name: string, options?: $CreateFileOptions): AsyncResult<$File> {
+	async createChild(
+		name: string,
+		options?: $CreateFileOptions,
+	): AsyncResult<$File> {
 		if (!this.isDirectory()) {
 			return err(ErrorCode.FileIsNotADirectory);
 		}
@@ -152,7 +189,10 @@ class $RamFile extends $SimpleFile implements $FileDescriptor {
 		return ok(file);
 	}
 
-	async removeChild(name: string, options?: $RemoveFileOptions): AsyncResult<void> {
+	async removeChild(
+		name: string,
+		options?: $RemoveFileOptions,
+	): AsyncResult<void> {
 		if (!this.isDirectory()) {
 			return err(ErrorCode.FileIsNotADirectory);
 		}
@@ -181,23 +221,5 @@ class $RamFile extends $SimpleFile implements $FileDescriptor {
 
 	static instanceOf(instance: $File): instance is $RamFile {
 		return instance.fs() instanceof $RamFS;
-	}
-}
-
-export class $RamFS implements $FileSystem {
-	private _root: $RamFile;
-
-	constructor() {
-		this._root = new $RamFile(this, '<RamFS>', {
-			isDirectory: true,
-		});
-	}
-
-	async initialize(): AsyncResult<void> {
-		return ok();
-	}
-
-	root(): $File {
-		return this._root;
 	}
 }
