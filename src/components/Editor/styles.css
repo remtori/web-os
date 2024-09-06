@@ -1,7 +1,0 @@
-.ProseMirror {
-	@apply m-0 w-full p-0 pb-8;
-}
-
-.ProseMirror-focused {
-	@apply caret-green-600 outline-none;
-}

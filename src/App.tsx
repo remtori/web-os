@@ -1,6 +1,5 @@
 import { Route, Router } from '@solidjs/router';
 import { ParentComponent } from 'solid-js';
-import { Editor } from './components/Editor';
 import { FileExplorer } from './components/FileExplorer';
 
 const AppLayout: ParentComponent = (props) => (
@@ -11,7 +10,6 @@ export const App = () => {
 	return (
 		<Router root={AppLayout}>
 			<Route path="/" component={FileExplorer} />
-			<Route path="/edit/text" component={Editor} />
 		</Router>
 	);
 };

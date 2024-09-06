@@ -1,6 +1,16 @@
 {
-    "plugins": ["prettier-plugin-tailwindcss", "prettier-plugin-organize-imports"],
+    "plugins": [
+        "prettier-plugin-tailwindcss",
+        "prettier-plugin-organize-imports"
+    ],
+    "singleQuote": true,
+    "trailingComma": "all",
     "useTabs": true,
     "tabWidth": 4,
-    "singleQuote": true
+    "importOrder": [
+      "<THIRD_PARTY_MODULES>",
+      "^[./]"
+    ],
+    "importOrderSeparation": true,
+    "importOrderSortSpecifiers": true
 }

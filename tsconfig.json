@@ -8,6 +8,7 @@
     "isolatedModules": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
+    "noEmit": true,
     "noUncheckedIndexedAccess": true,
     "checkJs": true,
     "lib": ["dom", "dom.iterable", "ES2022"],
@@ -19,12 +20,11 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@kernel/*": ["./src/kernel/*"],
       "@deps/*": ["./deps/*"],
     }
   },
   "include": [
-    ".eslintrc.cjs",
+    ".eslintrc.js",
     "**/*.ts",
     "**/*.tsx",
     "**/*.cjs",
