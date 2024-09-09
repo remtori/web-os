@@ -1,10 +1,12 @@
 import { trpc } from '@/trpc';
 import {
+	Accessor,
 	Component,
 	createResource,
 	createSignal,
 	For,
 	Match,
+	Setter,
 	Show,
 	Switch,
 } from 'solid-js';
@@ -27,7 +29,11 @@ export const FileExplorer: Component = () => {
 				<div>Empty</div>
 			</Match>
 			<Match when={data()}>
-				<ListFiles data={data()!.data} setCurrentDir={setCurrentDir} />
+				<ListFiles
+					data={data()!.data}
+					currentDir={currentDir}
+					setCurrentDir={setCurrentDir}
+				/>
 			</Match>
 		</Switch>
 	);
@@ -42,30 +48,48 @@ type Readdir = {
 
 const ListFiles: Component<{
 	data: Readdir;
-	setCurrentDir: (path: string) => void;
+	currentDir: Accessor<string>;
+	setCurrentDir: Setter<string>;
 }> = (props) => {
+	const parentDir = props.currentDir().replace(/[^/]+\/$/, '');
+
 	return (
 		<div class="flex flex-col gap-2">
+			<Show when={props.currentDir() !== parentDir}>
+				<a
+					class="flex flex-row cursor-pointer"
+					onclick={() => props.setCurrentDir(parentDir)}
+				>
+					../
+				</a>
+			</Show>
 			<For each={props.data}>
-				{(file) => (
-					<Show
-						when={file.name.endsWith('/')}
-						fallback={
-							<a class="flex flex-row">
-								<div>{file.name}</div>
-								<div>{file.size}</div>
-								<div>{String(file.lastModified)}</div>
-							</a>
-						}
-					>
-						<a
-							class="flex flex-row"
-							onclick={() => props.setCurrentDir(file.name)}
+				{(file) => {
+					const displayName = file.name.replace(
+						props.currentDir(),
+						'',
+					);
+
+					return (
+						<Show
+							when={file.name.endsWith('/')}
+							fallback={
+								<a class="flex flex-row cursor-pointer justify-between">
+									<div>{displayName}</div>
+									<div>{file.size}</div>
+									<div>{String(file.lastModified)}</div>
+								</a>
+							}
 						>
-							{file.name}
-						</a>
-					</Show>
-				)}
+							<a
+								class="flex flex-row cursor-pointer"
+								onclick={() => props.setCurrentDir(file.name)}
+							>
+								{displayName}
+							</a>
+						</Show>
+					);
+				}}
 			</For>
 		</div>
 	);
