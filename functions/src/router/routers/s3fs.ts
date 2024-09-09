@@ -42,11 +42,17 @@ export const s3fsRouter = router({
 			});
 
 			const output = await s3Client.send(cmd);
-			const data = [];
+			const data: {
+				name: string;
+				etag?: string;
+				size?: number;
+				lastModified?: Date;
+			}[] = [];
+
 			if (output.CommonPrefixes) {
 				for (const dir of output.CommonPrefixes) {
 					data.push({
-						name: dir.Prefix,
+						name: dir.Prefix!,
 					});
 				}
 			}
@@ -58,7 +64,7 @@ export const s3fsRouter = router({
 					}
 
 					data.push({
-						name: file.Key,
+						name: file.Key!,
 						etag: file.ETag,
 						size: file.Size,
 						lastModified: file.LastModified,
