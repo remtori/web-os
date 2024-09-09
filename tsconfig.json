@@ -21,6 +21,7 @@
     "paths": {
       "@/*": ["./src/*"],
       "@deps/*": ["./deps/*"],
+      "@functions/router": ["./functions/src/router"]
     }
   },
   "include": [
