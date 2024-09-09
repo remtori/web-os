@@ -1,7 +1,6 @@
 {
     "scripts": {
-        "dev": "concurrently \"npm:build:dev\" \"npm:node\"",
-        "node": "nodemon dist/main.js",
+        "start": "nodemon dist/main.js",
         "build": "node --env-file ../.env esbuild.js",
         "build:dev": "node --env-file ../.env esbuild.js --watch"
     },
