@@ -11,7 +11,7 @@
     "build": "concurrently \"npm:build:*\"",
     "build:web": "vite build",
     "build:api": "npm run build --prefix functions",
-    "serve": "vite preview"
+    "preview": "node --enable-source-maps dist/main.cjs"
   },
   "dependencies": {
     "@fortawesome/fontawesome-common-types": "^6.6.0",

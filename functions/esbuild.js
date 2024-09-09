@@ -17,8 +17,9 @@ const buildOptions = {
         './src/main.ts'
     ],
 	bundle: true,
-	outfile: 'dist/main.js',
+	outfile: '../dist/main.cjs',
 	platform: 'node',
+	packages: 'bundle',
 	target: 'node20.17',
     format: 'cjs',
 	sourcemap: 'external',
@@ -38,5 +39,6 @@ const buildOptions = {
 if (process.argv[2] === '--watch') {
     context(buildOptions).then(ctx => ctx.watch());
 } else {
+	buildOptions.define['process.env.NODE_ENV'] = '"production"';
 	build(buildOptions);
 }
