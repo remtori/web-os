@@ -1,4 +1,4 @@
-import { build, context } from 'esbuild';
+const { build, context } = require('esbuild');
 
 const BUILD_ENVS = [
     'S3_ENDPOINT',
@@ -19,6 +19,7 @@ const buildOptions = {
 	outfile: 'dist/main.js',
 	platform: 'node',
 	target: 'node20.17',
+    format: 'cjs',
 	sourcemap: 'external',
     legalComments: 'none',
     define: Object.fromEntries(BUILD_ENVS.map(envName => {
@@ -34,8 +35,7 @@ const buildOptions = {
 }
 
 if (process.argv[2] === '--watch') {
-    const ctx = await context(buildOptions);
-	ctx.watch();
+    context(buildOptions).then(ctx => ctx.watch());
 } else {
 	build(buildOptions);
 }

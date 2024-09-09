@@ -7,5 +7,3 @@ const server = createServer({
 });
 
 server.start();
-
-console.log('hello? xyz');

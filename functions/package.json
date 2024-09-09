@@ -1,5 +1,4 @@
 {
-    "type": "module",
     "scripts": {
         "dev": "concurrently \"npm:build:dev\" \"npm:node\"",
         "node": "nodemon dist/main.js",
