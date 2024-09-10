@@ -39,8 +39,5 @@ export default defineConfig({
 	},
 	esbuild: {
 		legalComments: 'none',
-	},
-	build: {
-		outDir: 'dist/static',
 	}
 });

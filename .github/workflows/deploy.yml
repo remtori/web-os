@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - master
+      - v2
 
 jobs:
   publish_static:
@@ -15,15 +15,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Build
-        run: npm install && npm run build
+        run: npm install && npm run build:web
       - name: Publish to Cloudflare Pages
         uses: cloudflare/pages-action@v1
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: a3900b672541bad0e93684916832e4aa
           projectName: web-os
-          directory: dist/desktop
-          branch: master
+          directory: dist/
+          branch: v2
           wranglerVersion: '3'
   publish_server:
     runs-on: ubuntu-latest
