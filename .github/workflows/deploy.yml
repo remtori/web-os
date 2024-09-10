@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - v2
+      - main
 
 jobs:
   publish_static:
@@ -23,7 +23,7 @@ jobs:
           accountId: a3900b672541bad0e93684916832e4aa
           projectName: web-os
           directory: dist/
-          branch: v2
+          branch: main
           wranglerVersion: '3'
   publish_server:
     runs-on: ubuntu-latest
