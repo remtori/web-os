@@ -4,6 +4,7 @@ on:
       - main
     paths:
       - "functions/**"
+  workflow_dispatch:
 
 jobs:
   deploy_api:

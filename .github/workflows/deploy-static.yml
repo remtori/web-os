@@ -3,7 +3,10 @@ on:
     branches:
       - main
     paths-ignore:
+      - ".github/**"
+      - ".vscode/**"
       - "functions/**"
+  workflow_dispatch:
 
 jobs:
   deploy_static:
