@@ -3,7 +3,7 @@ services:
   api:
     image: ghcr.io/remtori/web-os-api:latest
     env_file: .env
-    port:
+    ports:
       - 5696:5696
     restart: unless-stopped
   watchtower:
