@@ -33,7 +33,10 @@ export function createServer(opts: ServerOptions) {
 	};
 	const start = async () => {
 		try {
-			await server.listen({ port });
+			await server.listen({
+				host: '0.0.0.0',
+				port,
+			});
 			console.log('listening on port', port);
 		} catch (err) {
 			server.log.error(err);
