@@ -1,23 +1,22 @@
 FROM node:22-alpine as builder
 
-# Build client code
+WORKDIR /build
+
 COPY package.json package-lock.json ./
 RUN npm install
 
-COPY functions/package.json functions/package-lock.json ./functions/
-RUN npm install --prefix functions
+COPY esbuild.js ./
+COPY src/ ./src
 
-COPY . .
 RUN npm run build
 
 FROM node:22-alpine
 
-USER www
-
 WORKDIR /app
 
-COPY --from=builder /app/dist /app/dist
+COPY --from=builder /build/dist /app/dist
 
+ENV NODE_ENV=production
 ENV PORT=5696
 ENV PREFIX=/api/bundle
 EXPOSE 5696

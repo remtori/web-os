@@ -1,0 +1,49 @@
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  publish_static:
+    runs-on: ubuntu-latest
+    environment: 'v2 deploy'
+    permissions:
+      contents: read
+      deployments: write
+    name: deploy-static
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Build
+        run: npm install && npm run build
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: a3900b672541bad0e93684916832e4aa
+          projectName: web-os
+          directory: dist/desktop
+          branch: master
+          wranglerVersion: '3'
+  publish_server:
+    runs-on: ubuntu-latest
+    environment: 'v2 deploy'
+    permissions:
+      contents: read
+      packages: write
+    name: deploy-server
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: https://ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: functions/
+          push: true
+          tags: ghcr.io/remtori/web-os-api:latest

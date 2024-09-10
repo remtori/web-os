@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "concurrently \"npm:dev:*\"",
     "dev:web": "vite",
-    "dev:api:build": "npm run build --prefix functions",
+    "dev:api:build": "npm run build:dev --prefix functions",
     "dev:api": "npm run start --prefix functions",
     "build": "concurrently \"npm:build:*\"",
     "build:web": "vite build",

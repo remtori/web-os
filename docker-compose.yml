@@ -1,14 +1,11 @@
 version: '3'
 services:
-  web-os:
-    image: ghcr.io/remtori/web-os:latest
-    ports:
-      - 35696:5696
+  api:
+    image: ghcr.io/remtori/web-os-api:latest
+    env_file: .env
+    port:
+      - 5696:5696
     restart: unless-stopped
-    deploy:
-      mode: replicated
-      replicas: 3
-      endpoint_mode: vip
   watchtower:
     image: containrrr/watchtower
     volumes:

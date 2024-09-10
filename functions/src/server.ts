@@ -1,8 +1,6 @@
-import fastifyStatic from '@fastify/static';
 import ws from '@fastify/websocket';
 import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify';
 import fastify from 'fastify';
-import path from 'node:path';
 
 import { appRouter } from './router';
 import { createContext } from './router/context';
@@ -29,12 +27,6 @@ export function createServer(opts: ServerOptions) {
 		useWSS: true,
 		trpcOptions: { router: appRouter, createContext },
 	});
-
-	if (!dev) {
-		server.register(fastifyStatic, {
-			root: path.resolve(__dirname, './static'),
-		});
-	}
 
 	const stop = async () => {
 		await server.close();

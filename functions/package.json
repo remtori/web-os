@@ -1,13 +1,12 @@
 {
     "scripts": {
-        "start": "nodemon dist/main.js",
-        "build": "node --env-file ../.env esbuild.js",
-        "build:dev": "node --env-file ../.env esbuild.js --watch"
+        "start": "nodemon --env-file ../.env dist/main.js",
+        "build": "node esbuild.js",
+        "build:dev": "node esbuild.js --watch"
     },
     "dependencies": {
         "@aws-sdk/client-s3": "^3.645.0",
         "@aws-sdk/s3-request-presigner": "^3.645.0",
-        "@fastify/static": "^7.0.4",
         "@fastify/websocket": "^10.0.1",
         "@trpc/server": "^10.45.2",
         "fastify": "^4.28.1",
