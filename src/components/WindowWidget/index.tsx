@@ -99,7 +99,7 @@ export const WindowWidget: Component<{
 					</button>
 				</div>
 			</div>
-			<div class="rounded-b-md w-full bg-white opacity-90 flex flex-grow flex-col">
+			<div class="rounded-b-md w-full bg-white opacity-90 flex flex-grow flex-col overflow-hidden">
 				<WindowControlContext.Provider value={control}>
 					{props.children}
 				</WindowControlContext.Provider>
