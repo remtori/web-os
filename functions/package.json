@@ -1,6 +1,6 @@
 {
     "scripts": {
-        "start": "nodemon --env-file ../.env dist/main.js",
+        "start": "nodemon --env-file ../.env dist/main.cjs",
         "build": "node esbuild.js",
         "build:dev": "node esbuild.js --watch"
     },

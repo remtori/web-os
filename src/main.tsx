@@ -1,5 +1,5 @@
+import { Desktop } from '@/components/Desktop';
 import { render } from 'solid-js/web';
-import { App } from './App';
 import { auth } from './firebase';
 import './globals.css';
 import { trpc } from './trpc';
@@ -9,4 +9,4 @@ import { trpc } from './trpc';
 	trpc,
 };
 
-render(() => <App />, document.getElementById('root')!);
+render(() => <Desktop />, document.getElementById('root')!);
