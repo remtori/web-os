@@ -41,10 +41,12 @@ export const WindowWidget: Component<{
 	children: JSX.Element;
 }> = (props) => {
 	const [title, setTitle] = createSignal('Untitled');
-	const [x, setX] = createSignal(100);
-	const [y, setY] = createSignal(200);
-	const [width, setWidth] = createSignal(400);
-	const [height, setHeight] = createSignal(600);
+	const [x, setX] = createSignal(Math.round(window.innerWidth * 0.05));
+	const [y, setY] = createSignal(Math.round(window.innerHeight * 0.2));
+	const [width, setWidth] = createSignal(Math.round(window.innerWidth * 0.5));
+	const [height, setHeight] = createSignal(
+		Math.round(window.innerHeight * 0.5),
+	);
 	const [maximized, setMaximized] = createSignal(false);
 
 	const windowContainer = (element: HTMLElement) => {
