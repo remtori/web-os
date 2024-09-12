@@ -49,10 +49,21 @@ export const WindowWidget: Component<{
 
 	const windowContainer = (element: HTMLElement) => {
 		createEffect(() => {
-			element.style.setProperty('left', `${x()}px`);
-			element.style.setProperty('top', `${y()}px`);
-			element.style.setProperty('width', `${width()}px`);
-			element.style.setProperty('height', `${height()}px`);
+			if (maximized()) {
+				element.style.setProperty('left', '0px');
+				element.style.setProperty('top', '0px');
+				element.style.setProperty('bottom', '0px');
+				element.style.setProperty('right', '0px');
+				element.style.setProperty('width', null);
+				element.style.setProperty('height', null);
+			} else {
+				element.style.setProperty('left', `${x()}px`);
+				element.style.setProperty('top', `${y()}px`);
+				element.style.setProperty('bottom', null);
+				element.style.setProperty('right', null);
+				element.style.setProperty('width', `${width()}px`);
+				element.style.setProperty('height', `${height()}px`);
+			}
 		});
 	};
 
@@ -78,7 +89,7 @@ export const WindowWidget: Component<{
 		>
 			<div
 				use:draggable={{ setX, setY }}
-				class="rounded-t-sm h-8 w-full bg-black opacity-80 flex flex-row justify-between items-center"
+				class="rounded-t-sm h-8 w-full bg-black flex flex-row justify-between items-center"
 			>
 				<div class="text-white p-2">{title()}</div>
 				<div class="flex flex-row">
@@ -99,7 +110,7 @@ export const WindowWidget: Component<{
 					</button>
 				</div>
 			</div>
-			<div class="rounded-b-md w-full bg-white opacity-90 flex flex-grow flex-col overflow-hidden">
+			<div class="w-full bg-white flex flex-grow flex-col overflow-hidden">
 				<WindowControlContext.Provider value={control}>
 					{props.children}
 				</WindowControlContext.Provider>

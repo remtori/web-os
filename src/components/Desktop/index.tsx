@@ -8,7 +8,7 @@ export function Desktop() {
 
 	return (
 		<div class="select-none bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 backdrop-blur-md h-screen w-screen flex flex-col">
-			<div class="flex flex-grow">
+			<div class="flex h-full w-full relative">
 				<WindowWidget>
 					<h1 class="text-2xl font-bold text-center">SolidJS</h1>
 					<p class="text-center">Hello World!</p>
