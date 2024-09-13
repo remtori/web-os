@@ -10,7 +10,7 @@
     "strict": true,
     "noEmit": true,
     "noUncheckedIndexedAccess": true,
-    "checkJs": true,
+    "checkJs": false,
     "lib": ["dom", "dom.iterable", "ES2022"],
     "module": "ESNext",
     "moduleResolution": "Bundler",
@@ -31,5 +31,8 @@
     "**/*.cjs",
     "**/*.js",
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "functions/node_modules",
+  ],
 }

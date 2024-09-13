@@ -8,3 +8,8 @@ global {
 		const FIREBASE_CLIENT_MEASUREMENT_ID: string;
 	}
 }
+
+declare module '*.svg' {
+	const link: string;
+	export default link;
+}
