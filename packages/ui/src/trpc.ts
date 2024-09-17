@@ -8,6 +8,7 @@ import {
 
 import type { AppRouter } from '@api';
 import superjson from 'superjson';
+import { auth } from './firebase';
 
 const isSecureProtocol = location.protocol === 'https:';
 const urlEndPoint = `${location.host}/api/bundle`;
@@ -24,6 +25,16 @@ export const trpc = createTRPCProxyClient<AppRouter>({
 			true: wsLink({ client: wsClient }),
 			false: httpBatchLink({
 				url: `${location.protocol}//${urlEndPoint}`,
+				async headers(_opts) {
+					const token = await auth.currentUser?.getIdToken();
+					if (!token) {
+						return {};
+					}
+
+					return {
+						Authorization: token,
+					};
+				},
 			}),
 		}),
 	],
