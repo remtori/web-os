@@ -32,7 +32,11 @@ export const s3fsRouter = router({
 				nextToken: z.string().optional(),
 			}),
 		)
-		.query(async ({ input }) => {
+		.query(async ({ input, ctx }) => {
+			if (ctx.permLevel < 1) {
+				throw new Error('Not allowed');
+			}
+
 			const cmd = new ListObjectsV2Command({
 				Bucket: S3_BUCKET,
 				Prefix: input.path,
@@ -89,7 +93,11 @@ export const s3fsRouter = router({
 				),
 			}),
 		)
-		.query(async ({ input }) => {
+		.query(async ({ input, ctx }) => {
+			if (ctx.permLevel < 1) {
+				throw new Error('Not allowed');
+			}
+
 			const promises: Promise<[string, string]>[] = [];
 			for (const [path, meta] of Object.entries(input.files)) {
 				const cmd = new PutObjectCommand({
