@@ -17,6 +17,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Set up QEMU
@@ -27,8 +29,7 @@ jobs:
           registry: https://ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name:
-        uses: pnpm/action-setup@v4
+      - name: Build
         run: pnpm install && pnpm run build
         env:
           FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
