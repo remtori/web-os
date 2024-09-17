@@ -1,5 +1,5 @@
-import { faWindowMaximize } from '@deps/fontawesome/fa-regular';
-import { faExpand, faMinus, faXmark } from '@deps/fontawesome/fa-solid';
+import { faWindowMaximize } from '@faw/fa-regular';
+import { faExpand, faMinus, faXmark } from '@faw/fa-solid';
 import Fa from 'solid-fa';
 import {
 	Accessor,

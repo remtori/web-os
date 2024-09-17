@@ -1,0 +1,3 @@
+packages:
+  - 'packages/*'
+  - 'deps/fontawesome/*'

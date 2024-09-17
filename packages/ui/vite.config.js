@@ -1,6 +1,7 @@
 import { defineConfig, loadEnv } from 'vite';
 import solidPlugin from 'vite-plugin-solid';
 import tsconfigPaths from 'vite-tsconfig-paths';
+import path from 'node:path';
 
 const BUILD_ENVS = [
     'FIREBASE_PROJECT_ID',
@@ -11,7 +12,7 @@ const BUILD_ENVS = [
 	'FIREBASE_CLIENT_MEASUREMENT_ID',
 ];
 
-const ENV = loadEnv('production', __dirname, '');
+const ENV = loadEnv('production', path.resolve(__dirname, '../..'), '');
 const buildEnvDefine = Object.fromEntries(BUILD_ENVS.map(envName => {
     let envValue = ENV[envName];
     if (!envValue) {

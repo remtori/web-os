@@ -4,34 +4,14 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"npm:dev:*\"",
-    "dev:web": "vite",
-    "dev:api:build": "npm run build:dev --prefix functions",
-    "dev:api": "npm run start --prefix functions",
-    "build": "concurrently \"npm:build:*\"",
-    "build:web": "vite build",
-    "build:api": "npm run build --prefix functions",
-    "preview": "node --enable-source-maps dist/main.cjs"
-  },
-  "dependencies": {
-    "@fortawesome/fontawesome-common-types": "^6.6.0",
-    "@trpc/client": "^10.45.2",
-    "firebase": "^10.13.1",
-    "solid-fa": "^0.2.0",
-    "solid-js": "^1.8.22",
-    "superjson": "^2.2.1"
+    "dev": "pnpm run --parallel --filter @web-os/* \"/dev:?.*/\"",
+    "build": "pnpm run --parallel --filter @web-os/* build"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.20",
-    "concurrently": "^8.2.2",
-    "postcss": "^8.4.45",
     "prettier": "^3.3.3",
     "prettier-plugin-organize-imports": "^4.0.0",
     "prettier-plugin-tailwindcss": "^0.6.6",
-    "tailwindcss": "^3.4.10",
-    "typescript": "^5.5.4",
-    "vite": "^5.4.3",
-    "vite-plugin-solid": "^2.10.2",
-    "vite-tsconfig-paths": "^5.0.1"
-  }
+    "typescript": "^5.5.4"
+  },
+  "packageManager": "pnpm@9.10.0+sha512.73a29afa36a0d092ece5271de5177ecbf8318d454ecd701343131b8ebc0c1a91c487da46ab77c8e596d6acf1461e3594ced4becedf8921b074fbd8653ed7051c"
 }

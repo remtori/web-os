@@ -1,0 +1,32 @@
+{
+	"name": "@web-os/ui",
+	"private": true,
+	"version": "0.0.0",
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build"
+	},
+	"dependencies": {
+		"@fortawesome/fontawesome-common-types": "^6.6.0",
+		"@trpc/client": "^10.45.2",
+		"firebase": "^10.13.1",
+		"superjson": "^2.2.1",
+		"solid-fa": "^0.2.0",
+		"solid-js": "^1.8.22",
+		"@faw/fa-brands": "workspace:*",
+		"@faw/fa-duotone": "workspace:*",
+		"@faw/fa-light": "workspace:*",
+		"@faw/fa-regular": "workspace:*",
+		"@faw/fa-solid": "workspace:*",
+		"@faw/fa-thin": "workspace:*"
+	},
+	"devDependencies": {
+		"autoprefixer": "^10.4.20",
+		"postcss": "^8.4.45",
+		"tailwindcss": "^3.4.11",
+		"vite": "^5.4.3",
+		"vite-plugin-solid": "^2.10.2",
+		"vite-tsconfig-paths": "^5.0.1"
+	}
+}

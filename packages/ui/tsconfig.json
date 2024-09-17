@@ -20,19 +20,10 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@deps/*": ["./deps/*"],
-      "@functions/router": ["./functions/src/router"]
+	  "@api": ["../api/src/router"],
     }
   },
   "include": [
-    ".eslintrc.js",
-    "**/*.ts",
-    "**/*.tsx",
-    "**/*.cjs",
-    "**/*.js",
-  ],
-  "exclude": [
-    "node_modules",
-    "functions/node_modules",
+    "src"
   ],
 }

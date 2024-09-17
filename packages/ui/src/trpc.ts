@@ -6,7 +6,7 @@ import {
 	wsLink,
 } from '@trpc/client';
 
-import type { AppRouter } from '@functions/router';
+import type { AppRouter } from '@api';
 import superjson from 'superjson';
 
 const isSecureProtocol = location.protocol === 'https:';

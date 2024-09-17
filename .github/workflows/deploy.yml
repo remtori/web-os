@@ -27,10 +27,19 @@ jobs:
           registry: https://ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build and push
+      - name: Build
+        run: pnpm install && pnpm run build
+        env:
+          FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
+          FIREBASE_CLIENT_EMAIL: ${{ vars.FIREBASE_CLIENT_EMAIL }}
+          FIREBASE_CLIENT_API_KEY: ${{ vars.FIREBASE_CLIENT_API_KEY }}
+          FIREBASE_CLIENT_MESSAGING_SENDER_ID: ${{ vars.FIREBASE_CLIENT_MESSAGING_SENDER_ID }}
+          FIREBASE_CLIENT_APP_ID: ${{ vars.FIREBASE_CLIENT_APP_ID }}
+          FIREBASE_CLIENT_MEASUREMENT_ID: ${{ vars.FIREBASE_CLIENT_MEASUREMENT_ID }}
+      - name: Push to registry
         uses: docker/build-push-action@v6
         with:
-          context: functions/
+          context: .
           push: true
           platforms: "linux/arm64,linux/amd64"
           tags: ghcr.io/remtori/web-os-api:latest
