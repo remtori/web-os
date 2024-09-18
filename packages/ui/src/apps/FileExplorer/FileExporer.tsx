@@ -13,8 +13,7 @@ import {
 } from 'solid-js';
 
 export const FileExplorer: Component = () => {
-	const { setTitle } = useWindowControl();
-	setTitle('File Explorer');
+	useWindowControl({ title: 'File Explorer' });
 
 	const [currentDir, setCurrentDir] = createSignal('');
 	const [data] = createResource(currentDir, (path) =>

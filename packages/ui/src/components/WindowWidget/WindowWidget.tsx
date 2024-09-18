@@ -1,41 +1,14 @@
 import { faWindowMaximize } from '@faw/fa-regular';
 import { faExpand, faMinus, faXmark } from '@faw/fa-solid';
 import Fa from 'solid-fa';
-import {
-	Accessor,
-	Component,
-	createContext,
-	createEffect,
-	createSignal,
-	JSX,
-	Setter,
-	useContext,
-} from 'solid-js';
+import { Component, createEffect, createSignal, JSX } from 'solid-js';
+import { WindowControl, WindowControlContext } from './control';
 import { draggable } from './draggable';
 import { ResizableControl } from './resizable';
 
 // solid-js use: directive doesnt work well with typescript
 // so we have to do this to preserve the import.
 draggable;
-
-export type WindowControl = {
-	title: Accessor<string>;
-	setTitle: Setter<string>;
-	x: Accessor<number>;
-	setX: Setter<number>;
-	y: Accessor<number>;
-	setY: Setter<number>;
-	width: Accessor<number>;
-	setWidth: Setter<number>;
-	height: Accessor<number>;
-	setHeight: Setter<number>;
-	maximized: Accessor<boolean>;
-	setMaximized: Setter<boolean>;
-};
-
-const WindowControlContext = createContext<WindowControl>();
-
-export const useWindowControl = () => useContext(WindowControlContext)!;
 
 export const WindowWidget: Component<{
 	children: JSX.Element;
