@@ -8,8 +8,8 @@
     "build": "pnpm run --parallel --filter @web-os/* build"
   },
   "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "prettier": "^3.3.3",
-    "prettier-plugin-organize-imports": "^4.0.0",
     "prettier-plugin-tailwindcss": "^0.6.6",
     "typescript": "^5.5.4"
   },

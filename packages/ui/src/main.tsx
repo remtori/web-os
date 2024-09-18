@@ -1,17 +1,17 @@
-import { Desktop } from '@/components/Desktop';
 import { render } from 'solid-js/web';
 
-import { AppRegistry } from './AppRegistry';
-import { auth } from './firebase';
-import { trpc } from './trpc';
+import { Desktop } from '@/components/Desktop';
 
 import './apps/register';
+import { auth } from './firebase';
 import './globals.css';
+import { useAppRegistry } from './registry';
+import { trpc } from './trpc';
 
 (window as any)._ = {
 	auth,
 	trpc,
-	registry: AppRegistry,
+	appRegistry: useAppRegistry,
 };
 
 render(() => <Desktop />, document.getElementById('root')!);

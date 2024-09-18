@@ -1,6 +1,8 @@
-import { auth } from '@/firebase';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { Component } from 'solid-js';
+
+import { auth } from '@/firebase';
+
 import GoogleSvg from './google-logo.svg';
 
 export const LoginScene: Component = () => {

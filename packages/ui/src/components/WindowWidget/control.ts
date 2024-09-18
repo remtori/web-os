@@ -1,4 +1,4 @@
-import { Accessor, createContext, Setter, useContext } from 'solid-js';
+import { Accessor, Setter, createContext, useContext } from 'solid-js';
 
 type Fn = () => void;
 

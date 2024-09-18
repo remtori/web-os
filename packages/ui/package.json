@@ -5,7 +5,8 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
-		"build": "vite build"
+		"build": "vite build",
+		"format": "prettier --write \"src/**/*.{js,ts,jsx,tsx}\""
 	},
 	"dependencies": {
 		"@faw/fa-brands": "workspace:*",
@@ -20,7 +21,8 @@
 		"firebase": "^10.13.1",
 		"solid-fa": "^0.2.0",
 		"solid-js": "^1.8.22",
-		"superjson": "^2.2.1"
+		"superjson": "^2.2.1",
+		"zustand": "5.0.0-rc.2"
 	},
 	"devDependencies": {
 		"autoprefixer": "^10.4.20",

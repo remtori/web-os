@@ -1,3 +1,6 @@
+import superjson from 'superjson';
+
+import type { AppRouter } from '@api';
 import {
 	createTRPCProxyClient,
 	createWSClient,
@@ -6,8 +9,6 @@ import {
 	wsLink,
 } from '@trpc/client';
 
-import type { AppRouter } from '@api';
-import superjson from 'superjson';
 import { auth } from './firebase';
 
 const isSecureProtocol = location.protocol === 'https:';

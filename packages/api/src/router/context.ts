@@ -1,4 +1,5 @@
 import type { CreateFastifyContextOptions } from '@trpc/server/adapters/fastify';
+
 import { auth } from './firebase';
 
 type User = {

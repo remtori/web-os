@@ -1,4 +1,4 @@
-global {
+declare namespace global {
 	namespace process.env {
 		const FIREBASE_PROJECT_ID: string;
 		const FIREBASE_CLIENT_EMAIL: string;

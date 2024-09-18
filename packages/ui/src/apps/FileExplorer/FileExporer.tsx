@@ -1,15 +1,16 @@
-import { trpc } from '@/trpc';
 import {
 	Accessor,
 	Component,
-	createResource,
-	createSignal,
 	For,
 	Match,
 	Setter,
 	Show,
 	Switch,
+	createResource,
+	createSignal,
 } from 'solid-js';
+
+import { trpc } from '@/trpc';
 
 export const FileExplorer: Component = () => {
 	const [currentDir, setCurrentDir] = createSignal('');

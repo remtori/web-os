@@ -1,10 +1,18 @@
-import { createSignal, For, lazy, Show, ValidComponent } from 'solid-js';
+import {
+	For,
+	Show,
+	ValidComponent,
+	createEffect,
+	createMemo,
+	createSignal,
+	lazy,
+} from 'solid-js';
 import { Dynamic } from 'solid-js/web';
 
-import { App, useAppRegistry } from '@/AppRegistry';
 import { LoginScene } from '@/components/Login';
 import { WindowWidget } from '@/components/WindowWidget';
 import { auth } from '@/firebase';
+import { App, useAppRegistry } from '@/registry';
 
 type RunningWindow = {
 	id: string;
@@ -18,7 +26,9 @@ export function Desktop() {
 		setIsLoggedIn(!!user);
 	});
 
-	const { apps } = useAppRegistry();
+	const apps = useAppRegistry((state) => state.apps);
+	const appList = createMemo(() => Object.values(apps()));
+
 	const [windows, setWindows] = createSignal<RunningWindow[]>([]);
 
 	const removeWindow = (id: string) => {
@@ -59,7 +69,7 @@ export function Desktop() {
 				</div>
 				<div class="h-12 bg-white bg-opacity-50 flex justify-center flex-row">
 					<div class="flex justify-center items-center p-2">
-						<For each={apps()}>
+						<For each={appList()}>
 							{(app) => (
 								<button
 									class="bg-sky-300 rounded-md p-2 font-bold"

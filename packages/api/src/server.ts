@@ -1,8 +1,9 @@
+import fastify from 'fastify';
+import path from 'node:path';
+
 import fastifyStatic from '@fastify/static';
 import ws from '@fastify/websocket';
 import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify';
-import fastify from 'fastify';
-import path from 'node:path';
 
 import { appRouter } from './router';
 import { createContext } from './router/context';
@@ -30,7 +31,7 @@ export function createServer(opts: ServerOptions) {
 	});
 	server.register(fastifyTRPCPlugin, {
 		prefix,
-		useWSS: true,
+		useWSS: !dev,
 		trpcOptions: { router: appRouter, createContext },
 	});
 

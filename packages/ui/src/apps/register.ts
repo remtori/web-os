@@ -1,6 +1,7 @@
-import { AppRegistry } from '@/AppRegistry';
+import { registry } from '@/registry';
+
 import { FileExplorer } from './FileExplorer';
 
-AppRegistry.register('explorer', () => FileExplorer, {
+registry.register('explorer', () => FileExplorer, {
 	title: 'File Explorer',
 });

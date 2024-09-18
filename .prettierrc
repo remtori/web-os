@@ -1,14 +1,16 @@
 {
     "plugins": [
         "prettier-plugin-tailwindcss",
-        "prettier-plugin-organize-imports"
+        "@trivago/prettier-plugin-sort-imports"
     ],
+	"tailwindConfig": "./packages/ui/tailwind.config.js",
     "singleQuote": true,
     "trailingComma": "all",
     "useTabs": true,
     "tabWidth": 4,
     "importOrder": [
       "<THIRD_PARTY_MODULES>",
+	  "^@",
       "^[./]"
     ],
     "importOrderSeparation": true,
