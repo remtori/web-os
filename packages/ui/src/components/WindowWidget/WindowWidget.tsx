@@ -10,17 +10,37 @@ import { ResizableControl } from './resizable';
 // so we have to do this to preserve the import.
 draggable;
 
+export type WindowInitProps = {
+	title?: string;
+	x?: number;
+	y?: number;
+	width?: number;
+	height?: number;
+	maximized?: boolean;
+	icon?: string;
+};
+
 export const WindowWidget: Component<{
+	init?: WindowInitProps;
+	close: () => void;
 	children: JSX.Element;
 }> = (props) => {
-	const [title, setTitle] = createSignal('Untitled');
-	const [x, setX] = createSignal(Math.round(window.innerWidth * 0.05));
-	const [y, setY] = createSignal(Math.round(window.innerHeight * 0.2));
-	const [width, setWidth] = createSignal(Math.round(window.innerWidth * 0.5));
-	const [height, setHeight] = createSignal(
-		Math.round(window.innerHeight * 0.5),
+	const [title, setTitle] = createSignal(props.init?.title || 'Untitled');
+	const [x, setX] = createSignal(
+		props.init?.x || Math.round(window.innerWidth * 0.05),
 	);
-	const [maximized, setMaximized] = createSignal(false);
+	const [y, setY] = createSignal(
+		props.init?.y || Math.round(window.innerHeight * 0.2),
+	);
+	const [width, setWidth] = createSignal(
+		props.init?.width || Math.round(window.innerWidth * 0.5),
+	);
+	const [height, setHeight] = createSignal(
+		props.init?.height || Math.round(window.innerHeight * 0.5),
+	);
+	const [maximized, setMaximized] = createSignal(
+		Boolean(props.init?.maximized),
+	);
 
 	const windowContainer = (element: HTMLElement) => {
 		createEffect(() => {
@@ -55,6 +75,7 @@ export const WindowWidget: Component<{
 		setY,
 		maximized,
 		setMaximized,
+		close: props.close,
 	};
 
 	return (
@@ -80,7 +101,10 @@ export const WindowWidget: Component<{
 							icon={maximized() ? faWindowMaximize : faExpand}
 						/>
 					</button>
-					<button class="appearance-none bg-transparent border-none text-white p-2 hover:bg-red-800">
+					<button
+						class="appearance-none bg-transparent border-none text-white p-2 hover:bg-red-800"
+						onClick={() => props.close()}
+					>
 						<Fa fw scale={1.4} icon={faXmark} />
 					</button>
 				</div>

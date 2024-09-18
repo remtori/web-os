@@ -1,4 +1,3 @@
-import { useWindowControl } from '@/components/WindowWidget';
 import { trpc } from '@/trpc';
 import {
 	Accessor,
@@ -13,8 +12,6 @@ import {
 } from 'solid-js';
 
 export const FileExplorer: Component = () => {
-	useWindowControl({ title: 'File Explorer' });
-
 	const [currentDir, setCurrentDir] = createSignal('');
 	const [data] = createResource(currentDir, (path) =>
 		trpc.s3fs.readdir.query({ path }),

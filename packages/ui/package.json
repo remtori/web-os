@@ -8,18 +8,19 @@
 		"build": "vite build"
 	},
 	"dependencies": {
-		"@fortawesome/fontawesome-common-types": "^6.6.0",
-		"@trpc/client": "^10.45.2",
-		"firebase": "^10.13.1",
-		"superjson": "^2.2.1",
-		"solid-fa": "^0.2.0",
-		"solid-js": "^1.8.22",
 		"@faw/fa-brands": "workspace:*",
 		"@faw/fa-duotone": "workspace:*",
 		"@faw/fa-light": "workspace:*",
 		"@faw/fa-regular": "workspace:*",
 		"@faw/fa-solid": "workspace:*",
-		"@faw/fa-thin": "workspace:*"
+		"@faw/fa-thin": "workspace:*",
+		"@fortawesome/fontawesome-common-types": "^6.6.0",
+		"@trpc/client": "^10.45.2",
+		"eventemitter3": "^5.0.1",
+		"firebase": "^10.13.1",
+		"solid-fa": "^0.2.0",
+		"solid-js": "^1.8.22",
+		"superjson": "^2.2.1"
 	},
 	"devDependencies": {
 		"autoprefixer": "^10.4.20",
