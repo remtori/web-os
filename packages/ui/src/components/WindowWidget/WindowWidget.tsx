@@ -1,8 +1,7 @@
-import Fa from 'solid-fa';
-import { Component, JSX, createEffect, createSignal } from 'solid-js';
-
 import { faWindowMaximize } from '@faw/fa-regular';
 import { faExpand, faMinus, faXmark } from '@faw/fa-solid';
+import Fa from 'solid-fa';
+import { Component, JSX, createEffect, createSignal } from 'solid-js';
 
 import { WindowControl, WindowControlContext } from './control';
 import { draggable } from './draggable';

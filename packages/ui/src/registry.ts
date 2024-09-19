@@ -1,5 +1,4 @@
-import EventEmitter from 'eventemitter3';
-import { Component, createSignal, onCleanup } from 'solid-js';
+import { Component } from 'solid-js';
 
 import { WindowInitProps } from '@/components/WindowWidget';
 

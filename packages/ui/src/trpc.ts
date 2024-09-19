@@ -1,5 +1,3 @@
-import superjson from 'superjson';
-
 import type { AppRouter } from '@api';
 import {
 	createTRPCProxyClient,
@@ -8,6 +6,7 @@ import {
 	splitLink,
 	wsLink,
 } from '@trpc/client';
+import superjson from 'superjson';
 
 import { auth } from './firebase';
 
