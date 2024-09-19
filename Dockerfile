@@ -3,7 +3,7 @@ FROM node:22-alpine
 WORKDIR /app
 
 COPY packages/api/dist/ /app/
-COPY packages/ui/dist/ /app/static/
+COPY packages/desktop/dist/ /app/static/
 
 ENV NODE_ENV=production
 ENV PORT=5696

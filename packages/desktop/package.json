@@ -1,5 +1,5 @@
 {
-	"name": "@web-os/ui",
+	"name": "@web-os/desktop",
 	"private": true,
 	"version": "0.0.0",
 	"type": "module",
