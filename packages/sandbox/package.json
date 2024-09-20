@@ -1,0 +1,19 @@
+{
+	"name": "@web-os/sandbox",
+	"private": true,
+	"version": "0.0.0",
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"format": "prettier --write \"src/**/*.{js,ts,jsx,tsx}\""
+	},
+	"dependencies": {
+		"eventemitter3": "^5.0.1",
+		"solid-js": "^1.8.22",
+		"@web-os/trpc-post-message": "workspace:*"
+	},
+	"devDependencies": {
+		"vite": "^5.4.3"
+	}
+}

@@ -1,0 +1,25 @@
+{
+	"compilerOptions": {
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"target": "es2022",
+		"allowJs": true,
+		"resolveJsonModule": true,
+		"allowSyntheticDefaultImports": true,
+		"strict": true,
+		"noEmit": true,
+		"noUncheckedIndexedAccess": true,
+		"checkJs": false,
+		"lib": ["dom", "dom.iterable", "WebWorker", "ES2022"],
+		"module": "ESNext",
+		"moduleResolution": "Bundler",
+		"jsx": "preserve",
+		"jsxImportSource": "solid-js",
+		"incremental": true,
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["./src/*"],
+		}
+	},
+	"include": ["src"]
+}

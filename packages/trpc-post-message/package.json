@@ -1,0 +1,29 @@
+{
+	"name": "@web-os/trpc-post-message",
+	"private": true,
+	"version": "0.0.0",
+	"type": "module",
+	"files": ["dist"],
+	"exports": {
+		"./adapter": {
+			"import": "./dist/adapter.js",
+			"require": "./dist/adapter.cjs"
+		},
+		"./link": {
+			"import": "./dist/link.js",
+			"require": "./dist/link.cjs"
+		}
+	},
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"format": "prettier --write \"src/**/*.{js,ts,jsx,tsx}\""
+	},
+	"dependencies": {
+		"@trpc/client": "^10.45.2",
+		"@trpc/server": "^10.45.2"
+	},
+	"devDependencies": {
+		"vite": "^5.4.3"
+	}
+}
