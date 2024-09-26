@@ -58,7 +58,7 @@ const ListFiles: Component<{
 		<div class="flex flex-col gap-2">
 			<Show when={props.currentDir() !== parentDir}>
 				<a
-					class="flex flex-row cursor-pointer"
+					class="flex cursor-pointer flex-row"
 					onclick={() => props.setCurrentDir(parentDir)}
 				>
 					../
@@ -75,7 +75,7 @@ const ListFiles: Component<{
 						<Show
 							when={file.name.endsWith('/')}
 							fallback={
-								<a class="flex flex-row cursor-pointer justify-between">
+								<a class="flex cursor-pointer flex-row justify-between">
 									<div>{displayName}</div>
 									<div>{file.size}</div>
 									<div>{String(file.lastModified)}</div>
@@ -83,7 +83,7 @@ const ListFiles: Component<{
 							}
 						>
 							<a
-								class="flex flex-row cursor-pointer"
+								class="flex cursor-pointer flex-row"
 								onclick={() => props.setCurrentDir(file.name)}
 							>
 								{displayName}

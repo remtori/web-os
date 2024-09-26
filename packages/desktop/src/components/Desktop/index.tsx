@@ -61,18 +61,18 @@ export function Desktop() {
 
 	return (
 		<Show when={isLoggedIn()} fallback={<LoginScene />}>
-			<div class="select-none bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 backdrop-blur-md h-screen w-screen flex flex-col">
-				<div class="flex h-full w-full relative">
+			<div class="flex h-screen w-screen select-none flex-col bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 backdrop-blur-md">
+				<div class="relative flex h-full w-full">
 					<For each={windows()}>
 						{(window) => <Dynamic component={window.component} />}
 					</For>
 				</div>
-				<div class="h-12 bg-white bg-opacity-50 flex justify-center flex-row">
-					<div class="flex justify-center items-center p-2">
+				<div class="flex h-12 flex-row justify-center bg-white bg-opacity-50">
+					<div class="flex items-center justify-center p-2">
 						<For each={appList()}>
 							{(app) => (
 								<button
-									class="bg-sky-300 rounded-md p-2 font-bold"
+									class="rounded-md bg-sky-300 p-2 font-bold"
 									onClick={() => addWindow(app)}
 								>
 									{app.meta.title || 'Untitled'}

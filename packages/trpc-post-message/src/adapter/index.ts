@@ -1,18 +1,18 @@
 import {
 	AnyRouter,
+	ProcedureType,
+	TRPCError,
 	callProcedure,
 	getTRPCErrorFromUnknown,
 	inferRouterContext,
-	ProcedureType,
-	TRPCError,
 } from '@trpc/server';
 import { Unsubscribable, isObservable } from '@trpc/server/observable';
+import { getErrorShape } from '@trpc/server/shared';
 
 import type {
 	PostMessageEventListener,
 	TRPCPostMessageResponse,
 } from '../types';
-import { getErrorShape } from '@trpc/server/shared';
 
 export type CreatePostMessageContextOptions = {
 	req: MessageEvent;
@@ -32,8 +32,7 @@ export type CreatePostMessageHandlerOptions<TRouter extends AnyRouter> = {
 export const createPostMessageHandler = <TRouter extends AnyRouter>(
 	opts: CreatePostMessageHandlerOptions<TRouter>,
 ) => {
-	const { router, context: ctx, addEventListener, postMessage } =
-		opts;
+	const { router, context: ctx, addEventListener, postMessage } = opts;
 
 	const subscriptions = new Map<number | string, Unsubscribable>();
 	const onMessage: Parameters<PostMessageEventListener>[0] = async (

@@ -82,19 +82,19 @@ export const WindowWidget: Component<{
 	return (
 		<div
 			ref={windowContainer}
-			class="absolute shadow-lg flex flex-col justify-start items-center"
+			class="absolute flex flex-col items-center justify-start shadow-lg"
 		>
 			<div
 				use:draggable={{ setX, setY }}
-				class="rounded-t-sm h-8 w-full bg-black flex flex-row justify-between items-center"
+				class="flex h-8 w-full flex-row items-center justify-between rounded-t-sm bg-black"
 			>
-				<div class="text-white p-2">{title()}</div>
+				<div class="p-2 text-white">{title()}</div>
 				<div class="flex flex-row">
-					<button class="appearance-none bg-transparent border-none text-white p-2 hover:bg-gray-400 hover:bg-opacity-60">
+					<button class="appearance-none border-none bg-transparent p-2 text-white hover:bg-gray-400 hover:bg-opacity-60">
 						<Fa fw icon={faMinus} />
 					</button>
 					<button
-						class="appearance-none bg-transparent border-none text-white p-2 hover:bg-gray-400 hover:bg-opacity-60"
+						class="appearance-none border-none bg-transparent p-2 text-white hover:bg-gray-400 hover:bg-opacity-60"
 						onClick={() => setMaximized((v) => !v)}
 					>
 						<Fa
@@ -103,14 +103,14 @@ export const WindowWidget: Component<{
 						/>
 					</button>
 					<button
-						class="appearance-none bg-transparent border-none text-white p-2 hover:bg-red-800"
+						class="appearance-none border-none bg-transparent p-2 text-white hover:bg-red-800"
 						onClick={() => props.close()}
 					>
 						<Fa fw scale={1.4} icon={faXmark} />
 					</button>
 				</div>
 			</div>
-			<div class="w-full bg-white flex flex-grow flex-col overflow-hidden">
+			<div class="flex w-full flex-grow flex-col overflow-hidden bg-white">
 				<WindowControlContext.Provider value={control}>
 					{props.children}
 				</WindowControlContext.Provider>

@@ -124,7 +124,7 @@ export const ResizableControl: Component<{
 					setHeight: props.setHeight,
 					direction: 'e',
 				}}
-				class="absolute bg-transparent right-0 bottom-0 w-1 h-full cursor-e-resize"
+				class="absolute bottom-0 right-0 h-full w-1 cursor-e-resize bg-transparent"
 			/>
 			<div
 				use:resizable={{
@@ -134,7 +134,7 @@ export const ResizableControl: Component<{
 					setHeight: props.setHeight,
 					direction: 'w',
 				}}
-				class="absolute bg-transparent left-0 bottom-0 w-1 h-full cursor-w-resize"
+				class="absolute bottom-0 left-0 h-full w-1 cursor-w-resize bg-transparent"
 			/>
 			<div
 				use:resizable={{
@@ -144,7 +144,7 @@ export const ResizableControl: Component<{
 					setHeight: props.setHeight,
 					direction: 's',
 				}}
-				class="absolute bg-transparent right-0 bottom-0 w-full h-1 cursor-s-resize"
+				class="absolute bottom-0 right-0 h-1 w-full cursor-s-resize bg-transparent"
 			/>
 			<div
 				use:resizable={{
@@ -154,7 +154,7 @@ export const ResizableControl: Component<{
 					setHeight: props.setHeight,
 					direction: 'n',
 				}}
-				class="absolute bg-transparent right-0 top-0 w-full h-1 cursor-n-resize"
+				class="absolute right-0 top-0 h-1 w-full cursor-n-resize bg-transparent"
 			/>
 			<div
 				use:resizable={{
@@ -164,7 +164,7 @@ export const ResizableControl: Component<{
 					setHeight: props.setHeight,
 					direction: 'ne',
 				}}
-				class="absolute bg-transparent z-10 -right-1 -top-1 w-2 h-2 cursor-ne-resize"
+				class="absolute -right-1 -top-1 z-10 h-2 w-2 cursor-ne-resize bg-transparent"
 			/>
 			<div
 				use:resizable={{
@@ -174,7 +174,7 @@ export const ResizableControl: Component<{
 					setHeight: props.setHeight,
 					direction: 'nw',
 				}}
-				class="absolute bg-transparent z-10 -left-1 -top-1 w-2 h-2 cursor-nw-resize"
+				class="absolute -left-1 -top-1 z-10 h-2 w-2 cursor-nw-resize bg-transparent"
 			/>
 			<div
 				use:resizable={{
@@ -184,7 +184,7 @@ export const ResizableControl: Component<{
 					setHeight: props.setHeight,
 					direction: 'sw',
 				}}
-				class="absolute bg-transparent z-10 -left-1 -bottom-1 w-2 h-2 cursor-sw-resize"
+				class="absolute -bottom-1 -left-1 z-10 h-2 w-2 cursor-sw-resize bg-transparent"
 			/>
 			<div
 				use:resizable={{
@@ -194,7 +194,7 @@ export const ResizableControl: Component<{
 					setHeight: props.setHeight,
 					direction: 'se',
 				}}
-				class="absolute bg-transparent z-10 -right-1 -bottom-1 w-2 h-2 cursor-se-resize"
+				class="absolute -bottom-1 -right-1 z-10 h-2 w-2 cursor-se-resize bg-transparent"
 			/>
 		</>
 	);

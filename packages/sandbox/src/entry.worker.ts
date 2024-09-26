@@ -1,5 +1,5 @@
-import type { WorkerInitMessage } from './types';
 import { createSyscall } from './syscall';
+import type { WorkerInitMessage } from './types';
 
 const onMessage = async (event: MessageEvent) => {
 	const msg = event.data as WorkerInitMessage;

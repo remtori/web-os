@@ -1,3 +1,1 @@
-export function createSyscall(port: MessagePort) {
-
-}
+export function createSyscall(port: MessagePort) {}
