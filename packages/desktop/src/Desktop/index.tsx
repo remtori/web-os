@@ -1,10 +1,9 @@
 import { For, Show, createMemo, createSignal } from 'solid-js';
 
-import { LoginScene } from '@/components/Login';
+import { LoginScene } from '@/Login';
+import { $WindowServer, WindowServer } from '@/WindowServer';
 import { auth } from '@/firebase';
 import { useAppRegistry } from '@/registry';
-
-import { WindowServer, windowServer } from '../WindowServer';
 
 export function Desktop() {
 	const [isLoggedIn, setIsLoggedIn] = createSignal(false);
@@ -27,7 +26,7 @@ export function Desktop() {
 								<button
 									class="rounded-md bg-sky-300 p-2 font-bold"
 									onClick={() =>
-										windowServer.create(
+										$WindowServer.create(
 											app.defaultWindow,
 											app.id,
 										)

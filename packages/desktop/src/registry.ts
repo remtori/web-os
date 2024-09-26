@@ -1,4 +1,4 @@
-import { AnyWindow } from '@/components/WindowWidget';
+import { AnyWindow } from '@/WindowWidget';
 
 import { createSignalStore } from './the-store';
 

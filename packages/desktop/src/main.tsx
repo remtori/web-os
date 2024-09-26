@@ -2,8 +2,7 @@
 
 import { render } from 'solid-js/web';
 
-import { Desktop } from '@/components/Desktop';
-
+import { Desktop } from './Desktop';
 import { auth } from './firebase';
 import { useAppRegistry } from './registry';
 import { trpc } from './trpc';

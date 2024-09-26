@@ -1,4 +1,4 @@
-import { Component, For, ValidComponent, createSignal, lazy } from 'solid-js';
+import { Component, For } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
 
 import { useWindowServer } from './window-server-registry';

@@ -3,7 +3,8 @@ import { faExpand, faMinus, faXmark } from '@faw/fa-solid';
 import Fa from 'solid-fa';
 import { Component, JSX, createEffect, createSignal } from 'solid-js';
 
-import { windowServer } from '../WindowServer';
+import { $WindowServer } from '@/WindowServer';
+
 import { WindowControl, WindowControlContext } from './control';
 import { draggable } from './draggable';
 import { ResizableControl } from './resizable';
@@ -77,7 +78,7 @@ export const WindowWidget: Component<{
 		setY,
 		maximized,
 		setMaximized,
-		close: () => windowServer.close(props.id),
+		close: () => $WindowServer.close(props.id),
 	};
 
 	return (

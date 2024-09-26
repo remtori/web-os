@@ -1,9 +1,7 @@
 import { ValidComponent, lazy } from 'solid-js';
 
-import { App } from '@/registry';
+import { AnyWindow, WindowWidget } from '@/WindowWidget';
 import { createSignalStore } from '@/the-store';
-
-import { AnyWindow, WindowWidget } from '../WindowWidget';
 
 export type RunningWindow = {
 	id: string;
@@ -55,5 +53,5 @@ export const useWindowServer = createSignalStore<WindowServerRegistry>(
 	}),
 );
 
-export const windowServer: Pick<WindowServerRegistry, 'create' | 'close'> =
+export const $WindowServer: Pick<WindowServerRegistry, 'create' | 'close'> =
 	useWindowServer.getInitialState();
