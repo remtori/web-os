@@ -3,7 +3,7 @@
     "private": true,
     "version": "0.0.0",
     "scripts": {
-        "dev:start": "nodemon --env-file ../../.env dist/main.cjs",
+        "dev:start": "node --watch --env-file ../../.env dist/main.cjs",
         "dev:build": "node esbuild.js --watch",
         "build": "node esbuild.js",
 		"format": "prettier --write \"src/**/*.{js,ts,jsx,tsx}\""
@@ -21,7 +21,6 @@
     },
     "devDependencies": {
         "@types/node": "^22.5.4",
-        "esbuild": "^0.23.1",
-        "nodemon": "^3.1.4"
+        "esbuild": "^0.23.1"
     }
 }
