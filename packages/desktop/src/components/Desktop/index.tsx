@@ -1,23 +1,10 @@
-import {
-	For,
-	Show,
-	ValidComponent,
-	createEffect,
-	createMemo,
-	createSignal,
-	lazy,
-} from 'solid-js';
-import { Dynamic } from 'solid-js/web';
+import { For, Show, createMemo, createSignal } from 'solid-js';
 
 import { LoginScene } from '@/components/Login';
-import { WindowWidget } from '@/components/WindowWidget';
 import { auth } from '@/firebase';
-import { App, useAppRegistry } from '@/registry';
+import { useAppRegistry } from '@/registry';
 
-type RunningWindow = {
-	id: string;
-	component: ValidComponent;
-};
+import { WindowServer, windowServer } from '../WindowServer';
 
 export function Desktop() {
 	const [isLoggedIn, setIsLoggedIn] = createSignal(false);
@@ -29,53 +16,25 @@ export function Desktop() {
 	const apps = useAppRegistry((state) => state.apps);
 	const appList = createMemo(() => Object.values(apps()));
 
-	const [windows, setWindows] = createSignal<RunningWindow[]>([]);
-
-	const removeWindow = (id: string) => {
-		setWindows((child) => child.filter((window) => window.id !== id));
-	};
-
-	const addWindow = (app: App) => {
-		const id = `${app.id}-${Date.now() % 100_000}`;
-		const WindowComponent = lazy(() =>
-			Promise.resolve(app.component()).then((c) => ({
-				default: c,
-			})),
-		);
-
-		setWindows((child) => [
-			...child,
-			{
-				id,
-				component: () => (
-					<WindowWidget
-						init={/*@once*/ app.meta}
-						close={/*@once*/ () => removeWindow(id)}
-					>
-						<WindowComponent />
-					</WindowWidget>
-				),
-			},
-		]);
-	};
-
 	return (
 		<Show when={isLoggedIn()} fallback={<LoginScene />}>
 			<div class="flex h-screen w-screen select-none flex-col bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 backdrop-blur-md">
-				<div class="relative flex h-full w-full">
-					<For each={windows()}>
-						{(window) => <Dynamic component={window.component} />}
-					</For>
-				</div>
+				<WindowServer />
 				<div class="flex h-12 flex-row justify-center bg-white bg-opacity-50">
 					<div class="flex items-center justify-center p-2">
 						<For each={appList()}>
 							{(app) => (
 								<button
 									class="rounded-md bg-sky-300 p-2 font-bold"
-									onClick={() => addWindow(app)}
+									onClick={() =>
+										windowServer.create(
+											app.defaultWindow,
+											app.id,
+										)
+									}
 								>
-									{app.meta.title || 'Untitled'}
+									{app.defaultWindow.props.title ||
+										'Untitled'}
 								</button>
 							)}
 						</For>

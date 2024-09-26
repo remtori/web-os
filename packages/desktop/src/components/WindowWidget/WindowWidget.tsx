@@ -3,6 +3,7 @@ import { faExpand, faMinus, faXmark } from '@faw/fa-solid';
 import Fa from 'solid-fa';
 import { Component, JSX, createEffect, createSignal } from 'solid-js';
 
+import { windowServer } from '../WindowServer';
 import { WindowControl, WindowControlContext } from './control';
 import { draggable } from './draggable';
 import { ResizableControl } from './resizable';
@@ -22,8 +23,8 @@ export type WindowInitProps = {
 };
 
 export const WindowWidget: Component<{
+	id: string;
 	init?: WindowInitProps;
-	close: () => void;
 	children: JSX.Element;
 }> = (props) => {
 	const [title, setTitle] = createSignal(props.init?.title || 'Untitled');
@@ -76,7 +77,7 @@ export const WindowWidget: Component<{
 		setY,
 		maximized,
 		setMaximized,
-		close: props.close,
+		close: () => windowServer.close(props.id),
 	};
 
 	return (
@@ -104,7 +105,7 @@ export const WindowWidget: Component<{
 					</button>
 					<button
 						class="appearance-none border-none bg-transparent p-2 text-white hover:bg-red-800"
-						onClick={() => props.close()}
+						onClick={control.close}
 					>
 						<Fa fw scale={1.4} icon={faXmark} />
 					</button>

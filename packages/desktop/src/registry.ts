@@ -1,31 +1,31 @@
-import { Component } from 'solid-js';
-
-import { WindowInitProps } from '@/components/WindowWidget';
+import { AnyWindow } from '@/components/WindowWidget';
 
 import { createSignalStore } from './the-store';
 
-type ComponentLoader = () => Promise<Component> | Component;
-
-export type AppMeta = WindowInitProps & {};
+export type AppMeta = {};
 
 export type App = {
 	id: string;
 	meta: AppMeta;
-	component: ComponentLoader;
+	defaultWindow: AnyWindow;
 };
 
 type AppRegistry = {
 	apps: Record<string, App>;
-	register: (id: string, component: ComponentLoader, meta: AppMeta) => void;
+	register: (id: string, defaultWindow: AnyWindow) => void;
 };
 
 export const useAppRegistry = createSignalStore<AppRegistry>((set) => ({
 	apps: {},
-	register: (id, component, meta) =>
+	register: (id, defaultWindow) =>
 		set((state) => ({
 			apps: {
 				...state.apps,
-				[id]: { id, meta, component },
+				[id]: {
+					id,
+					meta: {},
+					defaultWindow,
+				},
 			},
 		})),
 }));
