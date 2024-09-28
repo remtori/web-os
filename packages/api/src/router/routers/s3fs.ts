@@ -24,6 +24,19 @@ const FilePathSchema = z
 	.trim()
 	.regex(/([^\/]+\/)*/);
 
+type ReaddirResult = {
+	data: {
+		name: string;
+		etag?: string;
+		size?: number;
+		lastModified?: Date;
+	}[];
+	nextToken: string | undefined;
+	queriedAt: number;
+};
+
+const DIR_CACHE: Map<string, ReaddirResult> = new Map();
+
 export const s3fsRouter = router({
 	readdir: publicProcedure
 		.input(
@@ -32,9 +45,18 @@ export const s3fsRouter = router({
 				nextToken: z.string().optional(),
 			}),
 		)
-		.query(async ({ input, ctx }) => {
+		.query(async ({ input, ctx }): Promise<ReaddirResult> => {
 			if (ctx.permLevel < 1) {
 				throw new Error('Not allowed');
+			}
+
+			const cacheKey = `${input.path}?nextToken=${input.nextToken}`;
+			const cachedResult = DIR_CACHE.get(cacheKey);
+			if (
+				cachedResult &&
+				Date.now() - cachedResult.queriedAt < 30 * 60 * 1000
+			) {
+				return cachedResult;
 			}
 
 			const cmd = new ListObjectsV2Command({
@@ -76,10 +98,14 @@ export const s3fsRouter = router({
 				}
 			}
 
-			return {
+			const ret = {
 				data,
 				nextToken: output.NextContinuationToken,
+				queriedAt: Date.now(),
 			};
+
+			DIR_CACHE.set(cacheKey, ret);
+			return ret;
 		}),
 	uploadUrls: publicProcedure
 		.input(
