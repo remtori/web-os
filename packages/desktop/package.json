@@ -15,6 +15,7 @@
 		"@faw/fa-regular": "workspace:*",
 		"@faw/fa-solid": "workspace:*",
 		"@faw/fa-thin": "workspace:*",
+		"@popperjs/core": "^2.11.8",
 		"@trpc/client": "^10.45.2",
 		"eventemitter3": "^5.0.1",
 		"firebase": "^10.13.1",
