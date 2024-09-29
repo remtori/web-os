@@ -120,7 +120,7 @@ export function Desktop() {
 					<For each={appList()}>
 						{(app) => (
 							<button
-								class="rounded-md bg-sky-100 p-2 font-bold"
+								class="rounded-md bg-white p-2 font-bold"
 								onClick={() =>
 									$WindowServer.create(
 										app.defaultWindow,
