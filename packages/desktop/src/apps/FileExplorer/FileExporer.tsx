@@ -1,4 +1,4 @@
-import { faFile, faFolder, faSpinner } from '@faw/fa-regular';
+import { faFile, faFolder, faPlus, faSpinner } from '@faw/fa-regular';
 import Fa from 'solid-fa';
 import {
 	Accessor,
@@ -24,8 +24,35 @@ export const FileExplorer: Component = () => {
 		trpc.s3fs.readdir.query({ path }),
 	);
 
+	let filePicker!: HTMLInputElement;
+	const onFilePicked = (e: Event) => {
+		console.log(filePicker.files);
+	};
+
 	return (
-		<div class="flex grow p-2">
+		<div class="flex grow flex-col p-2">
+			<div class="mb-2 flex flex-row border-b-[1px] border-dashed border-gray-500 pb-2">
+				<input
+					ref={filePicker}
+					type="file"
+					name="uploadFiles"
+					onChange={onFilePicked}
+					multiple
+					hidden
+				/>
+				<button
+					class="mr-4 underline decoration-1 underline-offset-2"
+					onClick={() => filePicker.click()}
+				>
+					New File
+				</button>
+				<button
+					class="mr-4 underline decoration-1 underline-offset-2"
+					onClick={() => {}}
+				>
+					New Folder
+				</button>
+			</div>
 			<Switch>
 				<Match when={data.loading}>
 					<div class="flex h-full w-full items-center justify-center">
